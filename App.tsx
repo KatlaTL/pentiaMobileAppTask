@@ -1,60 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import React, { useEffect, useState } from "react";
+import { Text, View } from "react-native";
+import SignIn from "./src/components/signin/SignIn";
+import useSignedInStatus from "./src/hooks/useSignedInStatus";
+import SignOut from "./src/components/signin/SingOut";
+import Register from "./src/components/signin/Register";
+import { globalStyle } from "./src/styles/global";
 
-function App() {
-  // Set an initializing state whilst Firebase connects
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+const App = (): React.JSX.Element | null => {
+    const [initializing, setInitializing] = useState<boolean>(true);
+    const [isNewUser, setIsNewUser] = useState<boolean>(false);
+    const user = useSignedInStatus(newInitializingState => setInitializing(newInitializingState));
 
+    if (initializing) {
+        return null;
+    }
 
-  /* auth()
-    .createUserWithEmailAndPassword('jane.doe@example.com', 'SuperSecretPassword!')
-    .then(() => {
-      console.log('User account created & signed in!');
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log('That email address is already in use!');
-      }
+    if (!user) {
+        return (
+            <View style={globalStyle.flex1}>
+                {isNewUser ? (
+                    <Register />
+                ) : (
+                    <SignIn registerClick={() => setIsNewUser(true)} />
+                )}
+            </View>
+        )
+    }
 
-      if (error.code === 'auth/invalid-email') {
-        console.log('That email address is invalid!');
-      }
-
-      console.error(error);
-    }); */
-
-  /* auth()
-    .signOut()
-    .then(() => console.log('User signed out!')); */
-
-
-  // Handle user state changes
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user) => {
-      setUser(user);
-      if (initializing) setInitializing(false);
-    });
-
-    return subscriber; // unsubscribe on unmount
-  }, []);
-
-  if (initializing) return null;
-
-  if (!user) {
     return (
-      <View>
-        <Text>Login</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View>
-      <Text>Welcome {user.email}</Text>
-    </View>
-  );
+        <View style={globalStyle.flex1}>
+            <Text>YOU ARE SIGNED IN</Text>
+            <SignOut signOutClick={() => setIsNewUser(false)} />
+        </View>
+    )
 }
 
 export default App;
