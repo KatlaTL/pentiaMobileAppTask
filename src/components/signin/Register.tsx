@@ -70,6 +70,14 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
         throw Error("Unknow action: " + action.type); //Should be caught somewhere
     }, initialState)
 
+    const updateError = (inputName: string, value: string): reducerAction => {
+        return {
+            type: "update_error",
+            inputName,
+            value
+        }
+    }
+
     const handleRegisterClick = () => {
         let isEmpty = false;
         for (const [key, value] of Object.entries(state)) {
@@ -92,13 +100,13 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
             .catch((err) => {
                 switch (err.code) {
                     case "auth/invalid-email":
-                        dispatch({ type: "update_error", inputName: "email", value: "Invalid email address" });
+                        dispatch(updateError("email", "Invalid email address"));
                         break;
                     case "auth/email-already-in-use":
-                        dispatch({ type: "update_error", inputName: "email", value: "Email address already in use" });
+                        dispatch(updateError("email", "Email address already in use"));
                         break;
                     case "auth/weak-password":
-                        dispatch({ type: "update_error", inputName: "password", value: "Weak password" });
+                        dispatch(updateError("password", "Weak password"));
                         break;
                     default:
                         console.error("default error")
