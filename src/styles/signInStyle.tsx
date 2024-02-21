@@ -11,7 +11,7 @@ export const signInStyle = StyleSheet.create({
     },
     inputWrapper: {
         width: "100%",
-        height: "12%",
+        height: "auto",
         minHeight: 100
     },
     inputField: {
@@ -39,7 +39,7 @@ export const signInStyle = StyleSheet.create({
         fontSize: 22
     },
     registerWrapper: {
-        width: "80%",
+        width: "85%",
         flexDirection: "row",
         justifyContent: "space-evenly",
     }

@@ -19,7 +19,7 @@ const App = (): React.JSX.Element | null => {
         return (
             <View style={globalStyle.flex1}>
                 {isNewUser ? (
-                    <Register />
+                    <Register signInClick={() => setIsNewUser(false)} />
                 ) : (
                     <SignIn registerClick={() => setIsNewUser(true)} />
                 )}

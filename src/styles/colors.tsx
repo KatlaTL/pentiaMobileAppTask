@@ -12,5 +12,8 @@ export const colors = StyleSheet.create({
     },
     whiteTextColor: {
         color: "#fff"
+    },
+    errorTextColor: {
+        color: "#b30531"
     }
 })
