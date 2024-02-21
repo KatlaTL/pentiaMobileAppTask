@@ -13,14 +13,14 @@ type Register = {
 
 type reducerAction = {
     type: string,
-    value: string | null,
+    value?: string | null | undefined,
     inputName: string
 }
 
 type reducerState = {
     [key: string]: {
         value: string,
-        error: string | null
+        error: string | null | undefined
     }
 }
 
@@ -63,7 +63,7 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                     ...state,
                     [action.inputName]: {
                         ...state[action.inputName],
-                        error: action.value
+                        error: null
                     }
                 }
         }
@@ -77,7 +77,7 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                 dispatch({ type: "update_error", inputName: key, value: ErrorMessages[key] || `${key} can't be empty` });
                 isEmpty = true;
             } else {
-                dispatch({ type: "remove_error", inputName: key, value: null });
+                dispatch({ type: "remove_error", inputName: key });
             }
         }
         if (isEmpty) {
