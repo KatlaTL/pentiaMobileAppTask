@@ -6,5 +6,9 @@ export const globalStyle = StyleSheet.create({
     },
     errorText: {
         fontSize: 20
+    },
+    activityIndicator: {    
+        flex: 1,
+        justifyContent: 'center'
     }
 })

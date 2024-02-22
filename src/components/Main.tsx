@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
@@ -12,33 +12,30 @@ const Main = (): React.JSX.Element => {
 
     if (initializing) {
         return (
-            <View style={{
-                flex: 1,
-                justifyContent: 'center'
-            }} >
+            <View style={globalStyle.activityIndicator}>
                 <ActivityIndicator size={100} color="#0000ff" />
-            </View >
+            </View>
         );
     }
 
-if (!user) {
+    if (!user) {
+        return (
+            <View  style={globalStyle.flex1}>
+                {isNewUser ? (
+                    <Register signInClick={() => setIsNewUser(false)} />
+                ) : (
+                    <SignIn registerClick={() => setIsNewUser(true)} />
+                )}
+            </View>
+        )
+    }
+
     return (
         <View style={globalStyle.flex1}>
-            {isNewUser ? (
-                <Register signInClick={() => setIsNewUser(false)} />
-            ) : (
-                <SignIn registerClick={() => setIsNewUser(true)} />
-            )}
+            <Text>YOU ARE SIGNED IN</Text>
+            <SignOut signOutClick={() => setIsNewUser(false)} />
         </View>
     )
-}
-
-return (
-    <View style={globalStyle.flex1}>
-        <Text>YOU ARE SIGNED IN</Text>
-        <SignOut signOutClick={() => setIsNewUser(false)} />
-    </View>
-)
 }
 
 export default Main;
