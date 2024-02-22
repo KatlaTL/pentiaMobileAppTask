@@ -1,5 +1,5 @@
 {
-    "displayName": "Display name can't be empty",
+    "userName": "User name can't be empty",
     "email": "Email can't be empty",
     "password": "Password can't be empty"
 }

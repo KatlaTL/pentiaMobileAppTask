@@ -1,32 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
 import auth from '@react-native-firebase/auth';
 import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { signInStyle as styles } from "../../styles/signInStyle";
 import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
+import useSignInForm, { reducerState } from "../../hooks/useSignInForm";
+import AuthError from "./AuthError";
 
 type SignIn = {
     registerClick: () => void
 }
 
+const initialValue: reducerState = {
+    email: {
+        value: "",
+        error: null
+    },
+    password: {
+        value: "",
+        error: null
+    }
+}
+
 const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const { reducerState, reducerDispatch, actionCreators, validateForm } = useSignInForm(initialValue);
 
     const handleSignInClick = async () => {
-        if (email.length === 0 || password.length === 0) {
-            return
+        if (validateForm()) {
+            return;
         }
-        auth().signInWithEmailAndPassword(email, password)
+
+        auth().signInWithEmailAndPassword(reducerState.email.value, reducerState.password.value)
             .then(() => console.log("signed in!"))
             .catch((err) => {
                 console.log(err.code);
                 switch (err.code) {
                     case "auth/invalid-email":
-                        console.log("invalid email!")
+                        reducerDispatch(actionCreators.setError("email", "Invalid email address"));
                         break;
                     case "auth/invalid-credential":
-                        console.log("invalid password!")
+                        reducerDispatch(actionCreators.setError("password", "Email and password doesn't match"));
                         break;
                     default:
                         console.log("default error")
@@ -46,10 +59,11 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
                     style={styles.inputField}
                     placeholder="Email"
                     placeholderTextColor={"gray"}
-                    onChangeText={text => setEmail(text)}
-                    defaultValue={email}
+                    onChangeText={text => reducerDispatch(actionCreators.setInputName("email", text))}
+                    defaultValue={reducerState.email.value}
                     autoComplete="email"
                 />
+                {reducerState.email.error && <AuthError message={reducerState.email.error} />}
             </View>
             <View style={styles.inputWrapper}>
                 <Text style={styles.label}>Password:</Text>
@@ -57,17 +71,18 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
                     style={styles.inputField}
                     placeholder="Password"
                     placeholderTextColor={"gray"}
-                    onChangeText={text => setPassword(text)}
-                    defaultValue={password}
+                    onChangeText={text => reducerDispatch(actionCreators.setInputName("password", text))}
+                    defaultValue={reducerState.password.value}
                     secureTextEntry={true}
                     autoComplete="current-password"
                 />
+                {reducerState.password.error && <AuthError message={reducerState.password.error} />}
             </View>
             <TouchableOpacity style={[styles.button, colors.purpleBackgroundColor]} onPress={handleSignInClick}>
                 <Text style={[styles.buttonText, colors.whiteTextColor]}>Sign In</Text>
             </TouchableOpacity>
 
-            <ToggleSignInRegister text="Not a user?" buttonText="Register here!" handleClick={registerClick}/>
+            <ToggleSignInRegister text="Not a user?" buttonText="Register here!" handleClick={registerClick} />
 
         </KeyboardAvoidingView>
     )
