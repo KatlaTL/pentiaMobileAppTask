@@ -6,6 +6,8 @@ import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
 import useSignInForm, { reducerState } from "../../hooks/useSignInForm";
 import AuthError from "./AuthError";
+import { useAppDispatch } from "../../redux/store/store";
+import { login } from "../../redux/reducers/userSlice";
 
 type SignIn = {
     registerClick: () => void
@@ -24,6 +26,7 @@ const initialValue: reducerState = {
 
 const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
     const { reducerState, reducerDispatch, actionCreators, validateForm } = useSignInForm(initialValue);
+    const appDispatch = useAppDispatch();
 
     const handleSignInClick = async () => {
         if (validateForm()) {
@@ -31,9 +34,17 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
         }
 
         auth().signInWithEmailAndPassword(reducerState.email.value, reducerState.password.value)
-            .then(() => console.log("signed in!"))
+            .then((userCredential) => {
+                appDispatch(
+                    login({
+                        email: userCredential.user.email,
+                        uid: userCredential.user.uid,
+                        displayName: userCredential.user.displayName,
+                        photoURL: userCredential.user.photoURL,
+                        phoneNumber: userCredential.user.phoneNumber
+                    }))
+            })
             .catch((err) => {
-                console.log(err.code);
                 switch (err.code) {
                     case "auth/invalid-email":
                         reducerDispatch(actionCreators.setError("email", "Invalid email address"));
@@ -42,7 +53,7 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
                         reducerDispatch(actionCreators.setError("password", "Email and password doesn't match"));
                         break;
                     default:
-                        console.log("default error")
+                        console.error(err, "Unhandled error");
                         break;
                 }
             });

@@ -6,6 +6,8 @@ import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
 import AuthError from "./AuthError";
 import useSignInForm from "../../hooks/useSignInForm";
+import { useAppDispatch } from "../../redux/store/store";
+import { login } from "../../redux/reducers/userSlice";
 
 type Register = {
     signInClick: () => void
@@ -13,6 +15,7 @@ type Register = {
 
 const Register = ({ signInClick }: Register): React.JSX.Element => {
     const { reducerState, reducerDispatch, actionCreators, validateForm } = useSignInForm();
+    const appDispatch = useAppDispatch();
 
     const handleRegisterClick = (): void => {
         if (validateForm()) {
@@ -20,10 +23,24 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
         }
 
         auth().createUserWithEmailAndPassword(reducerState.email.value, reducerState.password.value)
-            .then(async () => {
-                await auth().currentUser?.updateProfile({
+            .then(async (userCredential) => {
+                await userCredential.user.updateProfile({
                     displayName: reducerState.userName.value
-                })
+                });
+            })
+            .then(() => {
+                const user = auth().currentUser;
+
+                if (!user) throw "User doesn't exist";
+
+                appDispatch(
+                    login({
+                        email: user.email,
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        phoneNumber: user.phoneNumber
+                    }))
             })
             .catch((err) => {
                 switch (err.code) {
@@ -37,7 +54,7 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                         reducerDispatch(actionCreators.setError("password", "Weak password"));
                         break;
                     default:
-                        console.error("default error")
+                        console.error(err, "Unhandled error");
                         break;
                 }
             });
