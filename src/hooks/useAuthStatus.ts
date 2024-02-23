@@ -23,8 +23,7 @@ const useAuthStatus = (): AuthStatus => {
                         email: userState.email,
                         uid: userState.uid,
                         displayName: userState.displayName,
-                        photoURL: userState.photoURL,
-                        phoneNumber: userState.phoneNumber
+                        photoURL: userState.photoURL
                     }))
             } else {
                 appDispatch(logout());

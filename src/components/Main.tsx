@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
 import SignOut from "./signin/SingOut";
 import Register from "./signin/Register";
 import { globalStyle } from "../styles/global";
+import RoomsList from "./rooms/RoomsList";
 
 const Main = (): React.JSX.Element => {
     const [isNewUser, setIsNewUser] = useState<boolean>(false);
@@ -32,7 +33,7 @@ const Main = (): React.JSX.Element => {
 
     return (
         <View style={globalStyle.flex1}>
-            <Text>YOU ARE SIGNED IN</Text>
+            <RoomsList />
             <SignOut signOutClick={() => setIsNewUser(false)} />
         </View>
     )

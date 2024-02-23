@@ -40,8 +40,7 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
                         email: userCredential.user.email,
                         uid: userCredential.user.uid,
                         displayName: userCredential.user.displayName,
-                        photoURL: userCredential.user.photoURL,
-                        phoneNumber: userCredential.user.phoneNumber
+                        photoURL: userCredential.user.photoURL
                     }))
             })
             .catch((err) => {

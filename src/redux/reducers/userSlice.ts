@@ -5,8 +5,7 @@ export type UserType = {
     email: string | null,
     uid: string,
     displayName: string | null,
-    photoURL: string | null,
-    phoneNumber: string | null
+    photoURL: string | null
 }
 
 type SliceState = {

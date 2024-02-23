@@ -11,9 +11,12 @@ const SignOut = ({ signOutClick }: signOut): React.JSX.Element => {
     const appDispatch = useAppDispatch();
 
     const handleClick = async () => {
-        await auth().signOut();
-        appDispatch(logout());
-        signOutClick();
+        auth().signOut()
+        .then(() => {
+            appDispatch(logout());
+            signOutClick();
+        })
+        .catch(err => console.error("Can't log out", err));
     }
 
     return (

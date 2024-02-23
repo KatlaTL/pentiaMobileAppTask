@@ -8,6 +8,7 @@ import AuthError from "./AuthError";
 import useSignInForm from "../../hooks/useSignInForm";
 import { useAppDispatch } from "../../redux/store/store";
 import { login } from "../../redux/reducers/userSlice";
+import firestore from '@react-native-firebase/firestore';
 
 type Register = {
     signInClick: () => void
@@ -28,18 +29,27 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                     displayName: reducerState.userName.value
                 });
             })
-            .then(() => {
+            .then(async () => {
                 const user = auth().currentUser;
-
                 if (!user) throw "User doesn't exist";
 
+                await firestore().collection("users").doc(user.uid).set({
+                    email: user.email,
+                    uid: user.uid,
+                    user_name: user.displayName,
+                    photo_url: user.photoURL,
+                    date_created: new Date()
+                });                
+
+                return user;
+            })
+            .then((user) => {
                 appDispatch(
                     login({
                         email: user.email,
                         uid: user.uid,
                         displayName: user.displayName,
-                        photoURL: user.photoURL,
-                        phoneNumber: user.phoneNumber
+                        photoURL: user.photoURL
                     }))
             })
             .catch((err) => {
