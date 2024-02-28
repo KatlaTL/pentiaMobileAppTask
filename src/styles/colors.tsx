@@ -7,11 +7,20 @@ export const colors = StyleSheet.create({
     blueBackgroundColor: {
         backgroundColor: "#152784",
     },
+    chatBubbleBackgroundColor: {
+        backgroundColor: "#dedede",
+    },
+    chatBubbleSelfBackgroundColor: {
+        backgroundColor: "#0078fe",
+    },
     blueTextColor: {
         color: "#152784",
     },
     whiteTextColor: {
         color: "#fff"
+    },
+    blackTextColor: {
+        color: "#000"
     },
     errorTextColor: {
         color: "#b30531"

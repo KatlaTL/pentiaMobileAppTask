@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../reducers/userSlice';
 import appReducer from '../reducers/appSlice'
 import { useDispatch } from 'react-redux';
+import roomSlice from '../reducers/roomSlice';
 
 const store = configureStore({
     reducer: {
         user: userReducer.reducer,
-        app: appReducer.reducer
+        app: appReducer.reducer,
+        room: roomSlice.reducer
     }
 })
 
