@@ -8,10 +8,8 @@ import useSignInForm, { reducerState } from "../../hooks/useSignInForm";
 import AuthError from "./AuthError";
 import { useAppDispatch } from "../../redux/store/store";
 import { login } from "../../redux/reducers/userSlice";
-
-type SignIn = {
-    registerClick: () => void
-}
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../Main";
 
 const initialValue: reducerState = {
     email: {
@@ -24,7 +22,9 @@ const initialValue: reducerState = {
     }
 }
 
-const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "SignIn">;
+
+const SignIn = ({ navigation }: NavigationProps): React.JSX.Element => {
     const { reducerState, reducerDispatch, actionCreators, validateForm } = useSignInForm(initialValue);
     const appDispatch = useAppDispatch();
 
@@ -92,7 +92,7 @@ const SignIn = ({ registerClick }: SignIn): React.JSX.Element => {
                 <Text style={[styles.buttonText, colors.whiteTextColor]}>Sign In</Text>
             </TouchableOpacity>
 
-            <ToggleSignInRegister text="Not a user?" buttonText="Register here!" handleClick={registerClick} />
+            <ToggleSignInRegister text="Not a user?" buttonText="Register here!" handleClick={() => navigation.navigate("Register")} />
 
         </KeyboardAvoidingView>
     )

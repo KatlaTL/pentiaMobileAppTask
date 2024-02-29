@@ -5,10 +5,8 @@ import { roomStyle } from "../../styles/roomStyle";
 import { colors } from "../../styles/colors";
 import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
-
-type RoomType = {
-    room_id: string
-}
+import { RootStackParamList } from "../Main";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type messageType = {
     content: string,
@@ -18,7 +16,10 @@ type messageType = {
     user_name: string
 }
 
-const Room = ({ room_id }: RoomType): React.JSX.Element => {
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
+
+const Room = ({ route }: NavigationProps): React.JSX.Element => {
+    const { room_id, room_name } = route.params;
     const [messages, setMesages] = useState<messageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
     const user = useSelector(selectUser);
@@ -48,7 +49,8 @@ const Room = ({ room_id }: RoomType): React.JSX.Element => {
             })
 
             transaction.update(roomReference, {
-                total_messages: firestore.FieldValue.increment(1)
+                total_messages: firestore.FieldValue.increment(1),
+                date_last_message: new Date()
             })
         })
             .then(() => setChatMessage(""))
@@ -92,7 +94,7 @@ const Room = ({ room_id }: RoomType): React.JSX.Element => {
     return (
         <>
             <View>
-                <Text style={roomStyle.chatHeading}>Cats</Text>
+                <Text style={roomStyle.chatHeading}>{room_name}</Text>
             </View>
             <FlatList
                 contentContainerStyle={roomStyle.chatFlatList}

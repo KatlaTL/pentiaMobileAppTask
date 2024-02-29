@@ -3,21 +3,15 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { RoomListType } from "./RoomsList";
 import { roomStyle } from "../../styles/roomStyle";
 import Comment from "../../assets/comment.svg";
-import { useAppDispatch } from "../../redux/store/store";
-import { setRoomId } from '../../redux/reducers/roomSlice';
 
-const RoomListItem = (props: RoomListType): React.JSX.Element => {
-    const appDispatch = useAppDispatch();
+interface ListType extends RoomListType {
+    handleClick: () => void
+}
 
-    const handleClick = () => {
-        appDispatch(setRoomId({
-            room_id: props.room_id
-        }))
-    }
-
+const RoomListItem = (props: ListType): React.JSX.Element => {
     return (
         <View style={roomStyle.room}>
-            <TouchableOpacity onPress={handleClick}>
+            <TouchableOpacity onPress={props.handleClick}>
                 <View style={roomStyle.floatRightWrapper}>
                     <Text>{props.date_last_message.toLocaleDateString("dk", { month: "short", year: "numeric", day: "numeric" })}</Text>
                 </View>

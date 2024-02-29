@@ -9,12 +9,12 @@ import useSignInForm from "../../hooks/useSignInForm";
 import { useAppDispatch } from "../../redux/store/store";
 import { login } from "../../redux/reducers/userSlice";
 import firestore from '@react-native-firebase/firestore';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../Main";
 
-type Register = {
-    signInClick: () => void
-}
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "Register">;
 
-const Register = ({ signInClick }: Register): React.JSX.Element => {
+const Register = ({ navigation }: NavigationProps): React.JSX.Element => {
     const { reducerState, reducerDispatch, actionCreators, validateForm } = useSignInForm();
     const appDispatch = useAppDispatch();
 
@@ -39,7 +39,7 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                     user_name: user.displayName,
                     photo_url: user.photoURL,
                     date_created: new Date()
-                });                
+                });
 
                 return user;
             })
@@ -117,7 +117,7 @@ const Register = ({ signInClick }: Register): React.JSX.Element => {
                 <Text style={[styles.buttonText, colors.whiteTextColor]}>Register</Text>
             </TouchableOpacity>
 
-            <ToggleSignInRegister text="Already a user?" buttonText="Sign in here!" handleClick={signInClick} />
+            <ToggleSignInRegister text="Already a user?" buttonText="Sign in here!" handleClick={() => navigation.navigate("SignIn")} />
 
         </KeyboardAvoidingView>
     )

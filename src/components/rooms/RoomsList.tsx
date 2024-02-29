@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import RoomListItem from "./RoomListItem";
+import RoomsListItem from "./RoomsListItem";
 import firestore from '@react-native-firebase/firestore';
 import { roomStyle } from "../../styles/roomStyle";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../Main";
 
 export type RoomListType = {
     room_id: string,
@@ -13,7 +15,9 @@ export type RoomListType = {
     date_last_message: Date
 }
 
-const RoomsList = (): React.JSX.Element => {
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "RoomsList">;
+
+const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     const [rooms, setRooms] = useState<RoomListType[]>([]);
 
     const fetchRoomList = () => {
@@ -45,7 +49,13 @@ const RoomsList = (): React.JSX.Element => {
         fetchRoomList();
     }, [])
 
-    const listOfRooms = rooms.map((roomProps: RoomListType, index) => <RoomListItem {...roomProps} key={roomProps.room_name + index} />)
+    const listOfRooms = rooms.map((roomProps: RoomListType, index) => {
+        return <RoomsListItem
+            {...roomProps}
+            handleClick={() => navigation.navigate("Room", { room_id: roomProps.room_id, room_name: roomProps.room_name })}
+            key={roomProps.room_name + index}
+        />
+    })
 
     return (
         <ScrollView contentContainerStyle={roomStyle.roomList}>
