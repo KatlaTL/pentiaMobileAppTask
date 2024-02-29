@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { RefreshControl, ScrollView } from "react-native";
 import RoomsListItem from "./RoomsListItem";
 import firestore from '@react-native-firebase/firestore';
 import { roomStyle } from "../../styles/roomStyle";
@@ -19,9 +19,15 @@ type NavigationProps = NativeStackScreenProps<RootStackParamList, "RoomsList">;
 
 const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     const [rooms, setRooms] = useState<RoomListType[]>([]);
+    const [refreshing, setRefreshing] = React.useState(false);
 
-    const fetchRoomList = () => {
-        firestore().collection("rooms").get()
+    const fetchRoomList = useCallback(() => {
+        setRefreshing(true);
+
+        firestore()
+            .collection("rooms")
+            .orderBy("date_created")
+            .get()
             .then((rooms) => {
                 const newRooms: RoomListType[] = [];
                 rooms.forEach(value => {
@@ -43,7 +49,8 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
                 setRooms(newRooms);
             })
             .catch(err => console.error("Can't fetch rooms from firestore", err))
-    }
+            .finally(() => setRefreshing(false))
+    }, []);
 
     useEffect(() => {
         fetchRoomList();
@@ -58,7 +65,10 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     })
 
     return (
-        <ScrollView contentContainerStyle={roomStyle.roomList}>
+        <ScrollView
+            contentContainerStyle={roomStyle.roomList}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchRoomList} />}
+        >
             {listOfRooms}
         </ScrollView>
     )

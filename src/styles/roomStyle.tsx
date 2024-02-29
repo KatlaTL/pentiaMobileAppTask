@@ -70,7 +70,8 @@ export const roomStyle = StyleSheet.create({
     chatInputWrapper: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 10
+        marginTop: 10,
+        marginBottom: 5
     },
     chatButton: {
         flex: 1,

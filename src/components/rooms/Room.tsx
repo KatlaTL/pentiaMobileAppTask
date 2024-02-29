@@ -19,7 +19,7 @@ type messageType = {
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
 const Room = ({ route }: NavigationProps): React.JSX.Element => {
-    const { room_id, room_name } = route.params;
+    const { room_id } = route.params;
     const [messages, setMesages] = useState<messageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
     const user = useSelector(selectUser);
@@ -50,7 +50,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
             transaction.update(roomReference, {
                 total_messages: firestore.FieldValue.increment(1),
-                date_last_message: new Date()
+                date_last_message: firestore.FieldValue.serverTimestamp()
             })
         })
             .then(() => setChatMessage(""))
@@ -93,9 +93,6 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
     return (
         <>
-            <View>
-                <Text style={roomStyle.chatHeading}>{room_name}</Text>
-            </View>
             <FlatList
                 contentContainerStyle={roomStyle.chatFlatList}
                 overScrollMode="never"
