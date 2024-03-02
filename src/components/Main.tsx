@@ -86,8 +86,8 @@ const Main = (): React.JSX.Element => {
                     </>
                 ) : (
                     <>
-                        <Stack.Screen name="SignIn" component={SignIn} />
-                        <Stack.Screen name="Register" component={Register} />
+                        <Stack.Screen name="SignIn" component={SignIn} options={{title: "Sign In", headerStyle: colors.purpleBackgroundColor}} />
+                        <Stack.Screen name="Register" component={Register} options={{title: "Register", headerStyle: colors.blueBackgroundColor}} />
                     </>
                 )}
             </Stack.Navigator>

@@ -1,6 +1,6 @@
 import React from "react";
 import auth from '@react-native-firebase/auth';
-import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import { signInStyle as styles } from "../../styles/signInStyle";
 import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
@@ -71,10 +71,7 @@ const Register = ({ navigation }: NavigationProps): React.JSX.Element => {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.signInWrapper}
-            behavior={Platform.OS === "android" ? "height" : "padding"}
-        >
+        <ScrollView contentContainerStyle={styles.signInWrapper}>
             <View style={styles.inputWrapper}>
                 <Text style={styles.label}>User name:</Text>
                 <TextInput
@@ -118,8 +115,7 @@ const Register = ({ navigation }: NavigationProps): React.JSX.Element => {
             </TouchableOpacity>
 
             <ToggleSignInRegister text="Already a user?" buttonText="Sign in here!" handleClick={() => navigation.navigate("SignIn")} />
-
-        </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 
