@@ -26,6 +26,7 @@ const useAuthStatus = (): AuthStatus => {
                         photoURL: userState.photoURL
                     }))
             } else {
+                console.log("here")
                 appDispatch(logout());
             }
 

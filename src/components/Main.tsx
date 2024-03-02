@@ -1,24 +1,59 @@
 import React from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
-import SignOut from "./signin/SingOut";
 import Register from "./signin/Register";
 import { globalStyle } from "../styles/global";
+import { colors } from "../styles/colors";
 import RoomsList from "./rooms/RoomsList";
 import Room from "./rooms/Room";
-
+import { signOut } from "../utils/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
+import { useAppDispatch } from "../redux/store/store";
+import { logout } from "../redux/reducers/userSlice";
+import auth from '@react-native-firebase/auth';
 
 export type RootStackParamList = {
     SignIn: undefined,
     Register: undefined,
     RoomsList: undefined,
-    Room: { room_id: string, room_name: string }
+    Room: { room_id: string, room_name: string },
+    Root: undefined
+}
+
+export type RootDrawerParamList = {
+    LogOut: undefined
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
+
+const Root = (): React.JSX.Element => {
+    return (
+        <Drawer.Navigator screenOptions={{
+            headerStyle: colors.orangeBackgroundColor,
+            headerTintColor: colors.whiteTextColor.color,
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerTitleAlign: "center"
+        }}
+            drawerContent={(props) => {
+                //Overrides the content of the drawer. DrawerItemList renders all of the existing screens and DrawerItem adds a new custom item
+                return (
+                    <DrawerContentScrollView {...props}>
+                        <DrawerItemList {...props} />
+                        <DrawerItem label={"Logout"} onPress={signOut} />
+                    </DrawerContentScrollView>
+                )
+            }}
+        >
+            <Stack.Screen name="RoomsList" component={RoomsList} options={{ title: "Chat Rooms" }} />
+        </Drawer.Navigator>
+    )
+}
 
 const Main = (): React.JSX.Element => {
     const { user, initializing } = useAuthStatus();
@@ -33,19 +68,20 @@ const Main = (): React.JSX.Element => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{
-                headerStyle: {
-                    backgroundColor: '#f4511e',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-                headerTitleAlign: "center"
-            }}>
+            <Stack.Navigator
+                screenOptions={{
+                    headerStyle: colors.orangeBackgroundColor,
+                    headerTintColor: colors.whiteTextColor.color,
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerTitleAlign: "center"
+                }}
+                initialRouteName={user ? "Root" : "SignIn"}
+            >
                 {user ? (
                     <>
-                        <Stack.Screen name="RoomsList" component={RoomsList} options={{ title: "Chat Rooms" }} />
+                        <Stack.Screen name="Root" component={Root} options={{ headerShown: false }} />
                         <Stack.Screen name="Room" component={Room} options={({ route }) => ({ title: route.params.room_name })} />
                     </>
                 ) : (
