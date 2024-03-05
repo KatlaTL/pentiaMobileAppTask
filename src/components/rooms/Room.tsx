@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import firestore from '@react-native-firebase/firestore';
 import { roomStyle } from "../../styles/roomStyle";
 import { colors } from "../../styles/colors";
@@ -7,19 +7,24 @@ import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
 import { RootStackParamList } from "../Main";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { globalStyle } from "../../styles/global";
+import { MemoizedMessage } from "./Message";
 
 type messageType = {
     content: string,
     date_created: Date,
     type: string,
     uid: string,
-    user_name: string
+    user_name: string,
+    message_id: string
 }
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
 const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
+    const [lastDocument, setLastDocument] = useState<object>();
+    const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [messages, setMesages] = useState<messageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
     const user = useSelector(selectUser);
@@ -30,7 +35,6 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             return
         }
         Keyboard.dismiss();
-
         const roomReference = firestore().collection("rooms").doc(room_id);
 
         firestore().runTransaction(async transaction => {
@@ -57,49 +61,83 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             .catch(err => console.error(err))
     }
 
+    const fetchMoreMessages = () => {
+        if (lastDocument != undefined) {
+            setIsLoadingMessages(true);
+            firestore()
+                .collection("rooms")
+                .doc(room_id)
+                .collection("messages")
+                .orderBy("date_created", "desc")
+                .startAfter(lastDocument)
+                .limit(10)
+                .get()
+                .then((snapshot) => {
+                    setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
+                    const arr: messageType[] = [];
+                    snapshot.forEach(value => {
+                        const data = value.data();
+                        const message = {
+                            ...data,
+                            date_created: data.date_created.toDate(),
+                            message_id: value.id
+                        } as messageType;
+                        arr.push(message);
+                    });
+                    setMesages(prev => [...arr.reverse(), ...prev])
+                })
+                .catch(err => console.error(err))
+                .finally(() => setIsLoadingMessages(false))
+        }
+    }
+
     useEffect(() => {
         const unsubscribe = firestore()
             .collection("rooms")
             .doc(room_id)
             .collection("messages")
-            .orderBy("date_created")
+            .orderBy("date_created", "desc")
             .limit(fetchLimit)
-            .onSnapshot((data) => {
+            .onSnapshot((snapshot) => {
+                setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
                 const arr: messageType[] = [];
-                data.forEach(value => {
-                    const data = {
-                        ...value.data(),
-                        date_created: value.data().date_created.toDate()
-                    } as messageType;
-                    arr.push(data);
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "added") {
+                        const data = change.doc.data();
+                        const message = {
+                            ...data,
+                            date_created: data.date_created.toDate(),
+                            message_id: change.doc.id
+                        } as messageType;
+                        arr.push(message);
+                    }
                 });
-                setMesages(arr);
+                setMesages(prev => [...prev, ...arr.reverse()]);
             }, (err) => console.log(err))
 
         return () => unsubscribe();
     }, [])
 
-    const renderItem = ({ item }) => {
-        const style = item.uid === user?.uid ? [roomStyle.chatSelfBubble, colors.chatBubbleSelfBackgroundColor] : [roomStyle.chatBubble, colors.chatBubbleBackgroundColor];
-        return (
-            <View>
-                {item.uid != user?.uid && <Text style={roomStyle.chatUser}>{item.user_name}</Text>}
-                <View style={style}>
-                    <Text style={[colors.blackTextColor, roomStyle.chatBubbleText]}>{item.content}</Text>
-                </View>
-            </View>
-        )
-    }
+    const renderItem = useCallback(({ item }) => (
+        <MemoizedMessage item={item} user={user} />
+    ), [])
 
     return (
         <>
+            {isLoadingMessages && (
+                <View style={[globalStyle.activityIndicator, { marginTop: 30 }]}>
+                    <ActivityIndicator size={50} color="#0000ff" />
+                </View>
+            )}
             <FlatList
                 contentContainerStyle={roomStyle.chatFlatList}
                 overScrollMode="never"
                 data={messages}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => item.content + index}
+                keyExtractor={item => item.message_id}
                 inverted
+                onEndReachedThreshold={0.8}
+                onEndReached={fetchMoreMessages}
             />
             <View style={roomStyle.chatInputWrapper}>
                 <TextInput
