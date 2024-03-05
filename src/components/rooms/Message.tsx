@@ -2,8 +2,15 @@ import { memo } from "react";
 import { colors } from "../../styles/colors";
 import { roomStyle } from "../../styles/roomStyle";
 import { Text, View } from "react-native";
+import { MessageType } from "./Room";
+import { UserType } from "../../redux/reducers/userSlice";
 
-const Message = ({ item, user }): React.JSX.Element => {
+type Message = {
+    item: MessageType,
+    user: UserType | null
+}
+
+const Message = ({ item, user }: Message): React.JSX.Element => {
     const style = item.uid === user?.uid ? [roomStyle.chatSelfBubble, colors.chatBubbleSelfBackgroundColor] : [roomStyle.chatBubble, colors.chatBubbleBackgroundColor];
 
     return (

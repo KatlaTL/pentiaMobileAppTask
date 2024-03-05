@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
 
-type messageType = {
+export type MessageType = {
     content: string,
     date_created: Date,
     type: string,
@@ -25,7 +25,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
     const [lastDocument, setLastDocument] = useState<object>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
-    const [messages, setMesages] = useState<messageType[]>([]);
+    const [messages, setMesages] = useState<MessageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
     const user = useSelector(selectUser);
     const fetchLimit = 50;
@@ -74,14 +74,14 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                 .get()
                 .then((snapshot) => {
                     setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
-                    const arr: messageType[] = [];
+                    const arr: MessageType[] = [];
                     snapshot.forEach(value => {
                         const data = value.data();
                         const message = {
                             ...data,
                             date_created: data.date_created.toDate(),
                             message_id: value.id
-                        } as messageType;
+                        } as MessageType;
                         arr.push(message);
                     });
                     setMesages(prev => [...arr.reverse(), ...prev])
@@ -100,7 +100,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             .limit(fetchLimit)
             .onSnapshot((snapshot) => {
                 setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
-                const arr: messageType[] = [];
+                const arr: MessageType[] = [];
                 snapshot.docChanges().forEach(change => {
                     if (change.type === "added") {
                         const data = change.doc.data();
@@ -108,7 +108,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                             ...data,
                             date_created: data.date_created.toDate(),
                             message_id: change.doc.id
-                        } as messageType;
+                        } as MessageType;
                         arr.push(message);
                     }
                 });
@@ -118,7 +118,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
         return () => unsubscribe();
     }, [])
 
-    const renderItem = useCallback(({ item }) => (
+    const renderItem = useCallback(({ item }: { item: MessageType}) => (
         <MemoizedMessage item={item} user={user} />
     ), [])
 
@@ -134,7 +134,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                 overScrollMode="never"
                 data={messages}
                 renderItem={renderItem}
-                keyExtractor={item => item.message_id}
+                keyExtractor={(item: MessageType) => item.message_id}
                 inverted
                 onEndReachedThreshold={0.8}
                 onEndReached={fetchMoreMessages}

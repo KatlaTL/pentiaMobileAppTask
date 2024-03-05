@@ -1,20 +1,20 @@
 import { useReducer } from "react"
 import ErrorMessages from "../constants/errorMessages.json";
 
-export type reducerAction = {
+export type ReducerAction = {
     type: string,
     value: string,
     inputName: string
 }
 
-export type reducerState = {
+export type ReducerState = {
     [key: string]: {
         value: string,
         error: string | null
     }
 }
 
-const initialValue: reducerState = {
+const initialValue: ReducerState = {
     email: {
         value: "",
         error: null
@@ -29,8 +29,8 @@ const initialValue: reducerState = {
     }
 }
 
-const useSignInForm = (initialState: reducerState = initialValue) => {
-    const [reducerState, reducerDispatch] = useReducer((state: reducerState, action: reducerAction): reducerState => {
+const useSignInForm = (initialState: ReducerState = initialValue) => {
+    const [reducerState, reducerDispatch] = useReducer((state: ReducerState, action: ReducerAction): ReducerState => {
         switch (action.type) {
             case "inputName/set":
                 return {
@@ -61,21 +61,21 @@ const useSignInForm = (initialState: reducerState = initialValue) => {
     }, initialState)
 
     const actionCreators = {
-        setInputName: (inputName: string, value: string): reducerAction => {
+        setInputName: (inputName: string, value: string): ReducerAction => {
             return {
                 type: "inputName/set",
                 inputName,
                 value
             }
         },
-        setError: (inputName: string, value: string): reducerAction => {
+        setError: (inputName: string, value: string): ReducerAction => {
             return {
                 type: "error/set",
                 inputName,
                 value
             }
         },
-        removeError: (inputName: string): reducerAction => {
+        removeError: (inputName: string): ReducerAction => {
             return {
                 type: "error/remove",
                 inputName,

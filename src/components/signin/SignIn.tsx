@@ -4,14 +4,14 @@ import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { signInStyle as styles } from "../../styles/signInStyle";
 import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
-import useSignInForm, { reducerState } from "../../hooks/useSignInForm";
+import useSignInForm, { ReducerState } from "../../hooks/useSignInForm";
 import AuthError from "./AuthError";
 import { useAppDispatch } from "../../redux/store/store";
 import { login } from "../../redux/reducers/userSlice";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Main";
 
-const initialValue: reducerState = {
+const initialValue: ReducerState = {
     email: {
         value: "",
         error: null
