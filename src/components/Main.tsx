@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
 import Register from "./signin/Register";
@@ -7,13 +7,10 @@ import { globalStyle } from "../styles/global";
 import { colors } from "../styles/colors";
 import RoomsList from "./rooms/RoomsList";
 import Room from "./rooms/Room";
-import { signOut } from "../utils/auth";
+import { signOut } from "../services/AuthService";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
-import { useAppDispatch } from "../redux/store/store";
-import { logout } from "../redux/reducers/userSlice";
-import auth from '@react-native-firebase/auth';
 
 export type RootStackParamList = {
     SignIn: undefined,

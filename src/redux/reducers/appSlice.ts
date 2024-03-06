@@ -6,7 +6,7 @@ type SliceState = {
 }
 
 const initialState: SliceState = {
-    initializing: true
+    initializing: true,
 }
 
 const appSlice = createSlice({

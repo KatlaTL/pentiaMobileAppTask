@@ -9,15 +9,10 @@ import { RootStackParamList } from "../Main";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
-
-export type MessageType = {
-    content: string,
-    date_created: Date,
-    type: string,
-    uid: string,
-    user_name: string,
-    message_id: string
-}
+import { useAppDispatch } from "../../redux/store/store";
+import { getRoomMessagesSnapshot } from "../../services/RoomService";
+import { MessageType, selectRoomMessages } from "../../redux/reducers/messageSlice";
+import { debounce } from "../../utils/debounce";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
@@ -25,9 +20,11 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
     const [lastDocument, setLastDocument] = useState<object>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
-    const [messages, setMesages] = useState<MessageType[]>([]);
+    const [messages, setMessages] = useState<MessageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
+    const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);
+    const messagesSelector = useSelector(selectRoomMessages(room_id));
     const fetchLimit = 50;
 
     const sendMessage = () => {
@@ -61,6 +58,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             .catch(err => console.error(err))
     }
 
+    //FIX DUPLICATES 
     const fetchMoreMessages = () => {
         if (lastDocument != undefined) {
             setIsLoadingMessages(true);
@@ -73,7 +71,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                 .limit(10)
                 .get()
                 .then((snapshot) => {
-                    setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
+                    setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
                     const arr: MessageType[] = [];
                     snapshot.forEach(value => {
                         const data = value.data();
@@ -84,41 +82,29 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                         } as MessageType;
                         arr.push(message);
                     });
-                    setMesages(prev => [...arr.reverse(), ...prev])
+                    setMessages(prev => [...arr.reverse(), ...prev])
                 })
                 .catch(err => console.error(err))
                 .finally(() => setIsLoadingMessages(false))
         }
     }
 
+    const debounceFetchMoreMessages = debounce(fetchMoreMessages);
+
     useEffect(() => {
-        const unsubscribe = firestore()
-            .collection("rooms")
-            .doc(room_id)
-            .collection("messages")
-            .orderBy("date_created", "desc")
-            .limit(fetchLimit)
-            .onSnapshot((snapshot) => {
-                setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
-                const arr: MessageType[] = [];
-                snapshot.docChanges().forEach(change => {
-                    if (change.type === "added") {
-                        const data = change.doc.data();
-                        const message = {
-                            ...data,
-                            date_created: data.date_created.toDate(),
-                            message_id: change.doc.id
-                        } as MessageType;
-                        arr.push(message);
-                    }
-                });
-                setMesages(prev => [...prev, ...arr.reverse()]);
-            }, (err) => console.log(err))
+        if (messagesSelector) {
+            setMessages(messagesSelector)
+        }
+    }, [messagesSelector]);
+
+
+    useEffect(() => {
+        const unsubscribe = getRoomMessagesSnapshot({ room_id, fetchLimit, appDispatch, setLastDocument });
 
         return () => unsubscribe();
     }, [])
 
-    const renderItem = useCallback(({ item }: { item: MessageType}) => (
+    const renderItem = useCallback(({ item }: { item: MessageType }) => (
         <MemoizedMessage item={item} user={user} />
     ), [])
 
@@ -134,10 +120,10 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                 overScrollMode="never"
                 data={messages}
                 renderItem={renderItem}
-                keyExtractor={(item: MessageType) => item.message_id}
+                //keyExtractor={(item: MessageType) => item.message_id + item.date_created}
                 inverted
                 onEndReachedThreshold={0.8}
-                onEndReached={fetchMoreMessages}
+                onEndReached={debounceFetchMoreMessages}
             />
             <View style={roomStyle.chatInputWrapper}>
                 <TextInput

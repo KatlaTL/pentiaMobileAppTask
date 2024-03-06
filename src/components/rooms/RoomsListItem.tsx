@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { RoomListType } from "./RoomsList";
 import { roomStyle } from "../../styles/roomStyle";
 import Comment from "../../assets/comment.svg";
+import { RoomListType } from "../../redux/reducers/roomListSlice";
 
 interface ListType extends RoomListType {
     handleClick: () => void
@@ -13,7 +13,7 @@ const RoomListItem = (props: ListType): React.JSX.Element => {
         <View style={roomStyle.room}>
             <TouchableOpacity onPress={props.handleClick}>
                 <View style={roomStyle.floatRightWrapper}>
-                    <Text>{props.date_last_message.toLocaleDateString("dk", { month: "short", year: "numeric", day: "numeric" })}</Text>
+                    <Text>{new Date(props.date_last_message).toLocaleDateString("dk", { month: "short", year: "numeric", day: "numeric" })}</Text>
                 </View>
                 <Text style={roomStyle.title}>{props.room_name}</Text>
                 <Text style={roomStyle.description}>{props.description}</Text>
