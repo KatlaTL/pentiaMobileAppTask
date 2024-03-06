@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { roomStyle } from "../../styles/roomStyle";
 import { colors } from "../../styles/colors";
 import { useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
-import { fetchNextMessages, getRoomMessagesSnapshot } from "../../services/RoomService";
+import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, selectRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/debounce";
 
@@ -18,43 +18,25 @@ type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
 const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
+    
     const [lastDocument, setLastDocument] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
+
     const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);
     const messagesSelector = useSelector(selectRoomMessages(room_id));
 
-    const sendMessage = () => {
+    const handleClick = () => {
         if (chatMessage.length === 0) {
             return
         }
         Keyboard.dismiss();
-        const roomReference = firestore().collection("rooms").doc(room_id);
 
-        firestore().runTransaction(async transaction => {
-            const roomSnapshot = await transaction.get(roomReference);
-
-            if (!roomSnapshot.exists) {
-                throw "Room does not exisit";
-            }
-
-            transaction.set(roomReference.collection("messages").doc(), {
-                content: chatMessage,
-                date_created: firestore.FieldValue.serverTimestamp(),
-                type: "text",
-                uid: user?.uid,
-                user_name: user?.displayName
-            })
-
-            transaction.update(roomReference, {
-                total_messages: firestore.FieldValue.increment(1),
-                date_last_message: firestore.FieldValue.serverTimestamp()
-            })
-        })
+        sendMessage(room_id, chatMessage, user)
             .then(() => setChatMessage(""))
-            .catch(err => console.error(err))
+            .catch((err) => console.error(err));
     };
 
     const fetchMoreMessages = () => {
@@ -114,7 +96,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                     onChangeText={text => setChatMessage(text)}
                     defaultValue={chatMessage}
                 />
-                <TouchableOpacity style={[roomStyle.chatButton, colors.blueBackgroundColor]} onPress={sendMessage} disabled={chatMessage.length === 0}>
+                <TouchableOpacity style={[roomStyle.chatButton, colors.blueBackgroundColor]} onPress={handleClick} disabled={chatMessage.length === 0}>
                     <Text style={[roomStyle.chatButtonText, colors.whiteTextColor]}>Send</Text>
                 </TouchableOpacity>
             </View>

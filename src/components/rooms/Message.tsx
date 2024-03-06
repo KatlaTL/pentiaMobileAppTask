@@ -12,7 +12,8 @@ type Message = {
 
 const Message = ({ item, user }: Message): React.JSX.Element => {
     const style = item.uid === user?.uid ? [roomStyle.chatSelfBubble, colors.chatBubbleSelfBackgroundColor] : [roomStyle.chatBubble, colors.chatBubbleBackgroundColor];
-
+    console.log(item.message_id)
+    console.log(item.message_id === "S4c31DTivInfMJ9prQ5b" && item.content)
     return (
         <View>
             {item.uid != user?.uid && <Text style={roomStyle.chatUser}>{item.user_name}</Text>}

@@ -3,6 +3,7 @@ import { RoomListType } from '../redux/reducers/roomListSlice';
 import { MessageType, setLastDocument, setRoomMessages } from '../redux/reducers/messageSlice';
 import { AppDispatch } from '../redux/store/store';
 import { Dispatch, SetStateAction } from 'react';
+import { UserType } from '../redux/reducers/userSlice';
 
 export const getRoomList = async (): Promise<RoomListType[]> => {
     try {
@@ -19,7 +20,6 @@ export const getRoomList = async (): Promise<RoomListType[]> => {
                 date_last_message: value.data().date_last_message.toDate().toString(),
             } as RoomListType)
         })
-
 
         return newRooms;
     } catch (err) {
@@ -77,7 +77,6 @@ export const fetchNextMessages = (room_id: string, lastDocument: FirebaseFiresto
         .limit(limit)
         .get()
         .then((snapshot) => {
-            console.log(snapshot.size)
             const arr: MessageType[] = [];
             snapshot.forEach(value => {
                 const data = value.data();
@@ -95,5 +94,34 @@ export const fetchNextMessages = (room_id: string, lastDocument: FirebaseFiresto
         })
         .catch(err => {
             throw err;
+        })
+};
+
+export const sendMessage = (room_id: string, content: string, user?: UserType | null): Promise<void> => {
+    const roomReference = firestore().collection("rooms").doc(room_id);
+
+    return firestore().runTransaction(async transaction => {
+        const roomSnapshot = await transaction.get(roomReference);
+
+        if (!roomSnapshot.exists) {
+            throw "Room does not exisit";
+        }
+
+        transaction.set(roomReference.collection("messages").doc(), {
+            content: content,
+            date_created: firestore.FieldValue.serverTimestamp(),
+            type: "text",
+            uid: user?.uid,
+            user_name: user?.displayName
+        })
+
+        transaction.update(roomReference, {
+            total_messages: firestore.FieldValue.increment(1),
+            date_last_message: firestore.FieldValue.serverTimestamp()
+        })
+    })
+        .then(() => Promise.resolve())
+        .catch(err => {
+            throw err
         })
 };
