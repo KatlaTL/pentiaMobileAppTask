@@ -18,7 +18,7 @@ type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
 const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
-    
+
     const [lastDocument, setLastDocument] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -57,6 +57,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
     useEffect(() => {
         if (messagesSelector) {
+            console.log(messagesSelector.length)
             setMessages(messagesSelector)
         }
     }, [messagesSelector]);

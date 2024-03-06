@@ -11,10 +11,7 @@ export type MessageType = {
 }
 
 type SliceState = {
-    [room_id: string]: {
-        messages: MessageType[],
-        lastDocument: string 
-    }
+    [room_id: string]: MessageType[]
 }
 
 const initialState: SliceState = {}
@@ -26,26 +23,14 @@ const messageSlice = createSlice({
     reducers: {
         setRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[] }>) => {
             return {
-                [action.payload.room_id]: {
-                    messages: [...(state[action.payload.room_id]?.messages || []), ...action.payload.messages],
-                    lastDocument: ""
-                }
-            }
-        },
-        setLastDocument: (state, action: PayloadAction<{ room_id: string, lastDocument: string }>) => {
-            return {
-                [action.payload.room_id]: {
-                    messages: [...(state[action.payload.room_id]?.messages || [])],
-                    lastDocument: action.payload.lastDocument
-                }
+                [action.payload.room_id]: [...(state[action.payload.room_id]?.slice(1) || []), ...action.payload.messages]
             }
         }
     }
 })
 
-export const { setRoomMessages, setLastDocument } = messageSlice.actions;
+export const { setRoomMessages } = messageSlice.actions;
 
-export const selectRoomMessages = (room_id: string) => (state: RootState) => state.messages[room_id]?.messages
-export const selectLastDocument = (room_id: string) => (state: RootState) => state.messages[room_id]?.lastDocument;
+export const selectRoomMessages = (room_id: string) => (state: RootState) => state.messages[room_id];
 
 export default messageSlice;
