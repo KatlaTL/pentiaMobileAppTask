@@ -17,7 +17,7 @@ const Message = ({ item, user }: Message): React.JSX.Element => {
         <View>
             {item.uid != user?.uid && <Text style={roomStyle.chatUser}>{item.user_name}</Text>}
             <View style={style}>
-                <Text style={[colors.blackTextColor, roomStyle.chatBubbleText]}>{item.content + " " + item.message_id}</Text>
+                <Text style={[colors.blackTextColor, roomStyle.chatBubbleText]}>{item.content}</Text>
             </View>
         </View>
     )

@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { RoomListType } from '../redux/reducers/roomListSlice';
 import { MessageType, setLastDocument, setRoomMessages } from '../redux/reducers/messageSlice';
 import { AppDispatch } from '../redux/store/store';
@@ -30,12 +30,12 @@ export const getRoomList = async (): Promise<RoomListType[]> => {
 
 export type fetchMessagesSnapshotOptions = {
     room_id: string,
-    fetchLimit: number,
+    fetchLimit?: number,
     appDispatch: AppDispatch,
-    setLastDocument: Dispatch<SetStateAction<object>>
+    setLastDocument: Dispatch<SetStateAction<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | undefined>>
 }
 
-export const getRoomMessagesSnapshot = ({ room_id, fetchLimit, appDispatch, setLastDocument }: fetchMessagesSnapshotOptions): () => void => {
+export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, appDispatch, setLastDocument }: fetchMessagesSnapshotOptions): () => void => {
     return firestore()
         .collection("rooms")
         .doc(room_id)
@@ -43,7 +43,7 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit, appDispatch, setL
         .orderBy("date_created", "desc")
         .limit(fetchLimit)
         .onSnapshot((snapshot) => {
-            setLastDocument(snapshot.docs[snapshot.docs.length - 1]);
+            setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
             const messages: MessageType[] = [];
             snapshot.docChanges().forEach(change => {
                 if (change.type === "added") {
@@ -59,3 +59,41 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit, appDispatch, setL
             appDispatch(setRoomMessages({ room_id, messages: messages.reverse() }));
         }, (err) => console.log(err));
 }
+
+type fetchNextMessages = {
+    lastDocument: FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>,
+    messages: MessageType[]
+}
+
+export const fetchNextMessages = (room_id: string, lastDocument: FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>, limit: number = 20)
+    : Promise<fetchNextMessages> => {
+
+    return firestore()
+        .collection("rooms")
+        .doc(room_id)
+        .collection("messages")
+        .orderBy("date_created", "desc")
+        .startAfter(lastDocument)
+        .limit(limit)
+        .get()
+        .then((snapshot) => {
+            console.log(snapshot.size)
+            const arr: MessageType[] = [];
+            snapshot.forEach(value => {
+                const data = value.data();
+                const message = {
+                    ...data,
+                    date_created: data.date_created.toDate(),
+                    message_id: value.id
+                } as MessageType;
+                arr.push(message);
+            });
+            return {
+                lastDocument: snapshot.docs[snapshot.docs.length - 1],
+                messages: [...arr.reverse()]
+            }
+        })
+        .catch(err => {
+            throw err;
+        })
+};
