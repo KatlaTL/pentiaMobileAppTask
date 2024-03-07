@@ -10,6 +10,7 @@ import { useAppDispatch } from "../../redux/store/store";
 import { login } from "../../redux/reducers/userSlice";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Main";
+import { signIn } from "../../services/AuthService";
 
 const initialValue: ReducerState = {
     email: {
@@ -33,33 +34,19 @@ const SignIn = ({ navigation }: NavigationProps): React.JSX.Element => {
             return;
         }
 
-        auth().signInWithEmailAndPassword(reducerState.email.value, reducerState.password.value)
-            .then((userCredential) => {
-                appDispatch(
-                    login({
-                        email: userCredential.user.email,
-                        uid: userCredential.user.uid,
-                        displayName: userCredential.user.displayName,
-                        photoURL: userCredential.user.photoURL
-                    }))
-            })
-            .catch((err) => {
-                switch (err.code) {
-                    case "auth/invalid-email":
-                        reducerDispatch(actionCreators.setError("email", "Invalid email address"));
-                        break;
-                    case "auth/invalid-credential":
-                        reducerDispatch(actionCreators.setError("password", "Email and password doesn't match"));
-                        break;
-                    default:
-                        console.error(err, "Unhandled error");
-                        break;
-                }
-            });
+        signIn({
+            email: reducerState.email.value,
+            password: reducerState.password.value,
+            appDispatch,
+            validate: {
+                reducerDispatch,
+                actionCreators
+            }
+        });
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.signInWrapper}>
+        <ScrollView contentContainerStyle={styles.signInWrapper} keyboardShouldPersistTaps="handled">
             <View style={styles.inputWrapper}>
                 <Text style={styles.label}>Email:</Text>
                 <TextInput

@@ -14,6 +14,24 @@ export type ReducerState = {
     }
 }
 
+export type ActionCreatorsType = {
+    setInputName: (inputName: string, value: string) => {
+        type: string,
+        inputName: string,
+        value: string
+    },
+    setError: (inputName: string, value: string) => {
+        type: string,
+        inputName: string,
+        value: string
+    },
+    removeError: (inputName: string) => {
+        type: string,
+        inputName: string,
+        value: string
+    }
+}
+
 const initialValue: ReducerState = {
     email: {
         value: "",
@@ -60,7 +78,7 @@ const useSignInForm = (initialState: ReducerState = initialValue) => {
         throw Error("Unknow action: " + action.type); //Should be caught somewhere
     }, initialState)
 
-    const actionCreators = {
+    const actionCreators: ActionCreatorsType = {
         setInputName: (inputName: string, value: string): ReducerAction => {
             return {
                 type: "inputName/set",

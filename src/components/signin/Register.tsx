@@ -1,16 +1,14 @@
 import React from "react";
-import auth from '@react-native-firebase/auth';
-import { KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import { signInStyle as styles } from "../../styles/signInStyle";
 import { colors } from "../../styles/colors";
 import ToggleSignInRegister from "./ToggleSignInRegister";
 import AuthError from "./AuthError";
 import useSignInForm from "../../hooks/useSignInForm";
 import { useAppDispatch } from "../../redux/store/store";
-import { login } from "../../redux/reducers/userSlice";
-import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Main";
+import { register } from "../../services/AuthService";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Register">;
 
@@ -22,56 +20,20 @@ const Register = ({ navigation }: NavigationProps): React.JSX.Element => {
         if (validateForm()) {
             return;
         }
-
-        auth().createUserWithEmailAndPassword(reducerState.email.value, reducerState.password.value)
-            .then(async (userCredential) => {
-                await userCredential.user.updateProfile({
-                    displayName: reducerState.userName.value
-                });
-            })
-            .then(async () => {
-                const user = auth().currentUser;
-                if (!user) throw "User doesn't exist";
-
-                await firestore().collection("users").doc(user.uid).set({
-                    email: user.email,
-                    uid: user.uid,
-                    user_name: user.displayName,
-                    photo_url: user.photoURL,
-                    date_created: new Date()
-                });
-
-                return user;
-            })
-            .then((user) => {
-                appDispatch(
-                    login({
-                        email: user.email,
-                        uid: user.uid,
-                        displayName: user.displayName,
-                        photoURL: user.photoURL
-                    }))
-            })
-            .catch((err) => {
-                switch (err.code) {
-                    case "auth/invalid-email":
-                        reducerDispatch(actionCreators.setError("email", "Invalid email address"));
-                        break;
-                    case "auth/email-already-in-use":
-                        reducerDispatch(actionCreators.setError("email", "Email address already in use"));
-                        break;
-                    case "auth/weak-password":
-                        reducerDispatch(actionCreators.setError("password", "Weak password"));
-                        break;
-                    default:
-                        console.error(err, "Unhandled error");
-                        break;
-                }
-            });
+        register({
+            email: reducerState.email.value,
+            password: reducerState.password.value,
+            userName: reducerState.userName.value,
+            appDispatch,
+            validate: {
+                reducerDispatch,
+                actionCreators
+            }
+        });
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.signInWrapper}>
+        <ScrollView contentContainerStyle={styles.signInWrapper} keyboardShouldPersistTaps="handled">
             <View style={styles.inputWrapper}>
                 <Text style={styles.label}>User name:</Text>
                 <TextInput
