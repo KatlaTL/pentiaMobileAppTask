@@ -12,7 +12,7 @@ import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
 import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, selectRoomMessages } from "../../redux/reducers/messageSlice";
-import { debounce } from "../../utils/debounce";
+import { debounce, groupByDate } from "../../utils/helpers";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
@@ -57,7 +57,6 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
     useEffect(() => {
         if (messagesSelector) {
-            console.log(messagesSelector.length)
             setMessages(messagesSelector)
         }
     }, [messagesSelector]);

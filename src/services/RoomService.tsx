@@ -43,7 +43,6 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, appDispatch,
         .orderBy("date_created", "desc")
         .limit(fetchLimit)
         .onSnapshot((snapshot) => {
-            console.log(snapshot.docs[snapshot.docs.length - 1])
             setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
             const messages: MessageType[] = [];
             snapshot.docChanges().forEach(change => {
