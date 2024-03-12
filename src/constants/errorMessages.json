@@ -1,5 +1,7 @@
 {
     "userName": "User name can't be empty",
     "email": "Email can't be empty",
-    "password": "Password can't be empty"
+    "password": "Password can't be empty",
+    "invalid-email": "Invalid email address",
+    "credentials-mismatch": "Email and password doesn't match"
 }

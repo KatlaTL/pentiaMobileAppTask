@@ -19,6 +19,7 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     const getRoomList = useCallback(() => {
         setRefreshing(true);
         appDispatch(fetchRoomList())
+            .catch(err => console.error(err))
             .finally(() => setRefreshing(false));
     }, []);
 

@@ -4,6 +4,7 @@ import { AppDispatch } from '../redux/store/store';
 import { Dispatch } from 'react';
 import { ActionCreatorsType, ReducerAction } from '../hooks/useSignInForm';
 import { login } from '../redux/reducers/userSlice';
+import ErrorMessages from "../constants/errorMessages.json";
 
 type AuthRegisterType = {
     email: string,
@@ -80,10 +81,10 @@ export const signIn = ({ email, password, appDispatch, validate }: AuthRegisterT
         .catch((err) => {
             switch (err.code) {
                 case "auth/invalid-email":
-                    validate.reducerDispatch(validate.actionCreators.setError("email", "Invalid email address"));
+                    validate.reducerDispatch(validate.actionCreators.setError("email", ErrorMessages['invalid-email']));
                     break;
                 case "auth/invalid-credential":
-                    validate.reducerDispatch(validate.actionCreators.setError("password", "Email and password doesn't match"));
+                    validate.reducerDispatch(validate.actionCreators.setError("password", ErrorMessages['credentials-mismatch']));
                     break;
                 default:
                     console.error(err, "Unhandled error");
