@@ -12,7 +12,7 @@ import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
 import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, selectRoomMessages } from "../../redux/reducers/messageSlice";
-import { debounce, groupByDate } from "../../utils/helpers";
+import { debounce } from "../../utils/helpers";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 

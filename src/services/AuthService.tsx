@@ -46,7 +46,8 @@ export const register = ({ email, password, userName, appDispatch, validate }: A
                     email: user.email,
                     uid: user.uid,
                     displayName: user.displayName,
-                    photoURL: user.photoURL
+                    photoURL: user.photoURL,
+                    notificationsEnabled: false
                 }))
         })
         .catch((err) => {
@@ -75,7 +76,8 @@ export const signIn = ({ email, password, appDispatch, validate }: AuthRegisterT
                     email: userCredential.user.email,
                     uid: userCredential.user.uid,
                     displayName: userCredential.user.displayName,
-                    photoURL: userCredential.user.photoURL
+                    photoURL: userCredential.user.photoURL,
+                    notificationsEnabled: false
                 }))
         })
         .catch((err) => {

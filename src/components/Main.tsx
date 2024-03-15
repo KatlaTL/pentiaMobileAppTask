@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
@@ -11,6 +11,10 @@ import { signOut } from "../services/AuthService";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
+import NotificationsSwitch from "./NotificationSwitch";
+import { useAppDispatch } from "../redux/store/store";
+import { useSelector } from "react-redux";
+import { selectUser, toggleNotifications } from "../redux/reducers/userSlice";
 
 export type RootStackParamList = {
     SignIn: undefined,
@@ -21,13 +25,20 @@ export type RootStackParamList = {
 }
 
 export type RootDrawerParamList = {
-    LogOut: undefined
+    Notifications: undefined,
+    Logout: undefined
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const Root = (): React.JSX.Element => {
+    const appDispatch = useAppDispatch();
+    const user = useSelector(selectUser);
+
+    //TO-DO: save user notification value in DB and register all users with notifications enabled 
+    const onToggleSwitch = () => appDispatch(toggleNotifications());
+    
     return (
         <Drawer.Navigator screenOptions={{
             headerStyle: colors.orangeBackgroundColor,
@@ -42,6 +53,7 @@ const Root = (): React.JSX.Element => {
                 return (
                     <DrawerContentScrollView {...props}>
                         <DrawerItemList {...props} />
+                        <DrawerItem label={({ color }) => <NotificationsSwitch color={color} notifications={user?.notificationsEnabled || false} onToggleSwitch={onToggleSwitch} />} onPress={onToggleSwitch} />
                         <DrawerItem label={"Logout"} onPress={signOut} />
                     </DrawerContentScrollView>
                 )
@@ -83,8 +95,8 @@ const Main = (): React.JSX.Element => {
                     </>
                 ) : (
                     <>
-                        <Stack.Screen name="SignIn" component={SignIn} options={{title: "Sign In", headerStyle: colors.purpleBackgroundColor}} />
-                        <Stack.Screen name="Register" component={Register} options={{title: "Register", headerStyle: colors.blueBackgroundColor}} />
+                        <Stack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In", headerStyle: colors.purpleBackgroundColor }} />
+                        <Stack.Screen name="Register" component={Register} options={{ title: "Register", headerStyle: colors.blueBackgroundColor }} />
                     </>
                 )}
             </Stack.Navigator>
