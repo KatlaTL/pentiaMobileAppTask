@@ -9,6 +9,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Main";
 import { signIn } from "../../services/AuthService";
 import InputField from "./InputField";
+import FacebookSingIn from "./FacebookSingIn";
 
 const initialValue: ReducerState = {
     email: {
@@ -45,6 +46,7 @@ const SignIn = ({ navigation }: NavigationProps): React.JSX.Element => {
 
     return (
         <ScrollView contentContainerStyle={styles.signInWrapper} keyboardShouldPersistTaps="handled">
+        <FacebookSingIn />
             <InputField
                 name="Email"
                 onChangeFn={text => reducerDispatch(actionCreators.setInputName("email", text))}

@@ -17,7 +17,9 @@ const useAuthStatus = (): AuthStatus => {
 
     useEffect(() => {
         const unsubscribe = auth().onAuthStateChanged(userState => {
+            console.log("userState")
             if (userState) {
+                console.log(userState)
                 appDispatch(
                     login({
                         email: userState.email,
