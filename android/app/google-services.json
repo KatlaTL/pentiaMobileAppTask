@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "232876302693",
-    "project_id": "simple-chatting-app-d91ce",
-    "storage_bucket": "simple-chatting-app-d91ce.appspot.com"
+    "project_number": "767477628703",
+    "project_id": "pentiamobileapptask",
+    "storage_bucket": "pentiamobileapptask.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:232876302693:android:362f0205ec5384d6b8818c",
+        "mobilesdk_app_id": "1:767477628703:android:1db31b1697fc554b343a2a",
         "android_client_info": {
-          "package_name": "com.simplereactnativechattingapp"
+          "package_name": "com.pentiamobileapptask"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "232876302693-rbhn456isa4ja76pr1p3kmr09lvf5p6k.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.simplereactnativechattingapp",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "232876302693-ha378n6u908is4lhksa4dlu1pf37g6ja.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCmToIyJ7xjSWBaP6DKJpY_TbGrZ97sUfM"
+          "current_key": "AIzaSyAlTg34zYuQWk4IoC51jZlDIxgjy83O0PU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "232876302693-ha378n6u908is4lhksa4dlu1pf37g6ja.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

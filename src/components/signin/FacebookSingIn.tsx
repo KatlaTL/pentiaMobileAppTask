@@ -25,7 +25,7 @@ const onFacebookButtonPress = async () => {
     // Sign-in the user with the credential
     auth().signInWithCredential(facebookCredential)
         .then(async (user) => {
-            
+            console.log("saving user in DB")
             await firestore().collection("users").doc(user.user.uid).set({
                 email: user.user.email,
                 uid: user.user.uid,

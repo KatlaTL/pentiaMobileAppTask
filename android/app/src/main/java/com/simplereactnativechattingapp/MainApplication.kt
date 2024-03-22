@@ -1,4 +1,4 @@
-package com.simplereactnativechattingapp
+package com.pentiamobileapptask
 
 import android.app.Application
 import com.facebook.react.PackageList
