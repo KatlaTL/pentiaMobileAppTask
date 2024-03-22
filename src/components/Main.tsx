@@ -2,7 +2,6 @@ import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import SignIn from "./signin/SignIn";
 import useAuthStatus from "../hooks/useAuthStatus";
-import Register from "./signin/Register";
 import { globalStyle } from "../styles/global";
 import { colors } from "../styles/colors";
 import RoomsList from "./rooms/RoomsList";
@@ -18,7 +17,6 @@ import { selectUser, toggleNotifications } from "../redux/reducers/userSlice";
 
 export type RootStackParamList = {
     SignIn: undefined,
-    Register: undefined,
     RoomsList: undefined,
     Room: { room_id: string, room_name: string },
     Root: undefined
@@ -96,7 +94,6 @@ const Main = (): React.JSX.Element => {
                 ) : (
                     <>
                         <Stack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In", headerStyle: colors.purpleBackgroundColor }} />
-                        <Stack.Screen name="Register" component={Register} options={{ title: "Register", headerStyle: colors.blueBackgroundColor }} />
                     </>
                 )}
             </Stack.Navigator>

@@ -1,98 +1,102 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { AppDispatch } from '../redux/store/store';
-import { Dispatch } from 'react';
-import { ActionCreatorsType, ReducerAction } from '../hooks/useSignInForm';
-import { login } from '../redux/reducers/userSlice';
-import ErrorMessages from "../constants/errorMessages.json";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import googleService from '../../android/app/google-services.json';
+import { OAuthProvider, linkWithCredential } from '@firebase/auth';
 
-type AuthRegisterType = {
-    email: string,
-    password: string,
-    userName?: string,
-    appDispatch: AppDispatch,
-    validate: {
-        reducerDispatch: Dispatch<ReducerAction>,
-        actionCreators: ActionCreatorsType
+type ErrorType = {
+    code: string
+}
+
+export const onGoogleSignIn = async (): Promise<ErrorType | void> => {
+    try {
+        const clientID = googleService.client[0].oauth_client.filter(obj => obj.client_type === 3)[0].client_id;
+        GoogleSignin.configure({
+            webClientId: clientID
+        })
+
+        // Check if your device supports Google Play
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+        // Get the users ID token
+        const { idToken } = await GoogleSignin.signIn();
+
+        // Create a Firebase Google credential with the idToken
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+        // Sign-in the user with the credential
+        auth().signInWithCredential(googleCredential)
+            .then(async (user) => {
+                if (!user.user) throw "User doesn't exist";
+
+                console.log("saving user in DB...")
+                await firestore().collection("users").doc(user.user.uid).set({
+                    email: user.user.email,
+                    uid: user.user.uid,
+                    user_name: user.user.displayName,
+                    photo_url: user.user.photoURL,
+                    date_created: new Date()
+                });
+            })
+            .catch(err => {
+                return err;
+            });
+
+    } catch (err) {
+        console.error(err)
+        throw err;
     }
 }
 
-export const register = ({ email, password, userName, appDispatch, validate }: AuthRegisterType): void => {
-    auth().createUserWithEmailAndPassword(email, password)
-        .then(async (userCredential) => {
-            if (userName) {
-                await userCredential.user.updateProfile({
-                    displayName: userName
-                });
-            }
-        })
-        .then(async () => {
-            const user = auth().currentUser;
-            if (!user) throw "User doesn't exist";
+export const onFacebookSignIn = async (): Promise<ErrorType | void> => {
+    try {
+        // Attempt login with permissions
+        const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
-            await firestore().collection("users").doc(user.uid).set({
-                email: user.email,
-                uid: user.uid,
-                user_name: user.displayName,
-                photo_url: user.photoURL,
-                date_created: new Date()
+        if (result.isCancelled) {
+            throw 'User cancelled the login process';
+        }
+
+        // Once signed in, get the users AccessToken
+        const data = await AccessToken.getCurrentAccessToken();
+
+        if (!data) {
+            throw 'Something went wrong obtaining access token';
+        }
+
+        // Create a Firebase Facebook credential with the AccessToken
+        const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+        console.log(facebookCredential)
+        // Sign-in the user with the credential
+        const error = await auth().signInWithCredential(facebookCredential)
+            .then(async (user) => {
+                if (!user.user) throw "User doesn't exist";
+
+                console.log("saving user in DB...")
+                await firestore().collection("users").doc(user.user.uid).set({
+                    email: user.user.email,
+                    uid: user.user.uid,
+                    user_name: user.user.displayName,
+                    photo_url: user.user.photoURL,
+                    date_created: new Date()
+                });
+            })
+            .catch(err => {
+                if (err.code === "auth/account-exists-with-different-credential") {
+                    console.log("inside error")
+                    
+                }                
+                return err;
             });
 
-            return user;
-        })
-        .then((user) => {
-            appDispatch(
-                login({
-                    email: user.email,
-                    uid: user.uid,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                    notificationsEnabled: false
-                }))
-        })
-        .catch((err) => {
-            switch (err.code) {
-                case "auth/invalid-email":
-                    validate.reducerDispatch(validate.actionCreators.setError("email", "Invalid email address"));
-                    break;
-                case "auth/email-already-in-use":
-                    validate.reducerDispatch(validate.actionCreators.setError("email", "Email address already in use"));
-                    break;
-                case "auth/weak-password":
-                    validate.reducerDispatch(validate.actionCreators.setError("password", "Weak password"));
-                    break;
-                default:
-                    console.error(err, "Unhandled error");
-                    break;
-            }
-        });
-}
-
-export const signIn = ({ email, password, appDispatch, validate }: AuthRegisterType): void => {
-    auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            appDispatch(
-                login({
-                    email: userCredential.user.email,
-                    uid: userCredential.user.uid,
-                    displayName: userCredential.user.displayName,
-                    photoURL: userCredential.user.photoURL,
-                    notificationsEnabled: false
-                }))
-        })
-        .catch((err) => {
-            switch (err.code) {
-                case "auth/invalid-email":
-                    validate.reducerDispatch(validate.actionCreators.setError("email", ErrorMessages['invalid-email']));
-                    break;
-                case "auth/invalid-credential":
-                    validate.reducerDispatch(validate.actionCreators.setError("password", ErrorMessages['credentials-mismatch']));
-                    break;
-                default:
-                    console.error(err, "Unhandled error");
-                    break;
-            }
-        });
+        if (error) {
+            return { code: error.code }
+        }
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }
 
 export const signOut = (): void => {

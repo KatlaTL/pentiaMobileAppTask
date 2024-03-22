@@ -12,7 +12,20 @@
           "package_name": "com.pentiamobileapptask"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "767477628703-s4jd3471giqjff3s4a3prhf06p6jpdb5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pentiamobileapptask",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "767477628703-j92oqfnqe6ighc94q3j4d6n5kpvr1e3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAlTg34zYuQWk4IoC51jZlDIxgjy83O0PU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767477628703-j92oqfnqe6ighc94q3j4d6n5kpvr1e3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
