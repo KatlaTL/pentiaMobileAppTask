@@ -1,67 +1,32 @@
 import React from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import { signInStyle as styles } from "../../styles/signInStyle";
 import { colors } from "../../styles/colors";
-import ToggleSignInRegister from "./ToggleSignInRegister";
-import useSignInForm, { ReducerState } from "../../hooks/useSignInForm";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../Main";
 import { onFacebookSignIn, onGoogleSignIn } from "../../services/AuthService";
+import LoginCTA from "./LoginCTA";
 
-const initialValue: ReducerState = {
-    email: {
-        value: "",
-        error: null
-    },
-    password: {
-        value: "",
-        error: null
-    }
-}
-
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "SignIn">;
-
-const SignIn = ({ navigation }: NavigationProps): React.JSX.Element => {
-    const { reducerDispatch, actionCreators } = useSignInForm(initialValue);
-
-    const handleFacebookSignInClick = async () => {
-        const error = await onFacebookSignIn();
-
-        if (error) {
-            switch (error.code) {
-                /* case "auth/invalid-credential":
-                    reducerDispatch(actionCreators.setError("", "Invalid credentials"));
-                    break;
-                case "auth/user-disabled":
-                    reducerDispatch(actionCreators.setError("", "User is disabled"));
-                    break;
-                case "auth/account-exists-with-different-credential":
-                    console.error("auth/account-exists-with-different-credential")
-                    reducerDispatch(actionCreators.setError("", "Account already exist with different credentials"));
-                    break; */
-                default:
-                    console.error(error, "Unhandled error");
-                    break;
-            }
-        }
-    }
-
-    const handleGoogleSignInClick = async () => {
-        await onGoogleSignIn();
-    }
+const SignIn = (): React.JSX.Element => {
 
     return (
-        <ScrollView contentContainerStyle={styles.signInWrapper} keyboardShouldPersistTaps="handled">
+        <View style={styles.signInWrapper}>
+            <LoginCTA 
+                backgroundColorHex={colors.facebookBackgroundColor.backgroundColor} 
+                buttonText="Sign In with Facebook"
+                textColorHex={colors.whiteTextColor.color}
+                iconColorHex="#fff"
+                iconName="facebook"
+                onPress={onFacebookSignIn} 
+            />
 
-            <TouchableOpacity style={[styles.button, colors.facebookBackgroundColor]} onPress={handleFacebookSignInClick}>
-                <Text style={[styles.buttonText, colors.whiteTextColor]}>Sign In with Facebook</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.button, colors.purpleBackgroundColor]} onPress={handleGoogleSignInClick}>
-                <Text style={[styles.buttonText, colors.whiteTextColor]}>Sign In with Google</Text>
-            </TouchableOpacity>
-
-        </ScrollView>
+            <LoginCTA 
+                backgroundColorHex={colors.whiteBackgroundColor.backgroundColor} 
+                buttonText="Sign In with Google" 
+                textColorHex={colors.blackTextColor.color}
+                iconColorHex="#EA4335"
+                iconName="google"
+                onPress={onGoogleSignIn} 
+            />
+        </View>
     )
 }
 

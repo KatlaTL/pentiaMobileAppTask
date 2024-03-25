@@ -8,7 +8,10 @@ export const colors = StyleSheet.create({
         backgroundColor: "#152784",
     },
     facebookBackgroundColor: {
-        backgroundColor: "#1877F2"
+        backgroundColor: "#3b5998"
+    },
+    whiteBackgroundColor: {
+        backgroundColor: "#ffffff"
     },
     orangeBackgroundColor: {
         backgroundColor: "#f4511e"

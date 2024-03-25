@@ -1,7 +1,10 @@
 {
-    "userName": "User name can't be empty",
-    "email": "Email can't be empty",
-    "password": "Password can't be empty",
-    "invalid-email": "Invalid email address",
-    "credentials-mismatch": "Email and password doesn't match"
+    "account-disabled": {
+        "title": "Account disabled",
+        "message": "Login with a different account or contact customer support"
+    },
+    "something-went-wrong": {
+        "title": "Something went wrong",
+        "message": "Please login again" 
+    }
 }

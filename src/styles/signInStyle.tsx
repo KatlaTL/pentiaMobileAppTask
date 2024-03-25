@@ -33,7 +33,12 @@ export const signInStyle = StyleSheet.create({
         minHeight: 65,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 15
+        marginTop: 15,
+        flexDirection: "row",
+        elevation: 5,
+        shadowColor: '#52006A',
+        borderColor: "#a3a3a3",
+        borderWidth: 1
     },
     buttonText: {
         fontSize: 22
