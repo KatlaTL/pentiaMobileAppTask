@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
-import { getRoomList } from "../../services/RoomService";
+import { getAllRooms } from "../../services/RoomService";
 
 export type RoomListType = {
     room_id: string,
@@ -32,10 +32,13 @@ const roomListSlice = createSlice({
             .addCase(fetchRoomList.fulfilled, (state, action) => {
                 state.roomsList = [...action.payload]
             })
+            .addCase(fetchRoomList.rejected, (state, action) => {
+                //TO-DO handle getAllRooms error here
+            })
     }
 })
 
-export const fetchRoomList = createAsyncThunk("roomList/fetchRoomList", async () => (await getRoomList()) as RoomListType[]);
+export const fetchRoomList = createAsyncThunk("roomList/fetchRoomList", async () => (await getAllRooms()) as RoomListType[]);
 
 export const { setRoomList } = roomListSlice.actions;
 

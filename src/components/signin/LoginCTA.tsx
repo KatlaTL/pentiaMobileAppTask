@@ -1,7 +1,6 @@
 import React from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { signInStyle as styles } from "../../styles/signInStyle";
-import { colors } from "../../styles/colors";
 import { globalStyle } from "../../styles/global";
 import { Text, TouchableOpacity, View } from "react-native";
 

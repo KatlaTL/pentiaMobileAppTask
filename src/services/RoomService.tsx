@@ -5,9 +5,9 @@ import { AppDispatch } from '../redux/store/store';
 import { Dispatch, SetStateAction } from 'react';
 import { UserType } from '../redux/reducers/userSlice';
 
-export const getRoomList = async (): Promise<RoomListType[]> => {
+export const getAllRooms = async (): Promise<RoomListType[]> => {
     try {
-        const rooms = await firestore().collection("rooms").orderBy("date_created").get();
+        const rooms = await firestore().collection("rooms").orderBy("date_last_message", "desc").get();
         const newRooms: RoomListType[] = [];
         rooms.forEach(value => {
             const data = value.data() as RoomListType;
@@ -20,11 +20,10 @@ export const getRoomList = async (): Promise<RoomListType[]> => {
                 date_last_message: value.data().date_last_message.toDate().toString(),
             } as RoomListType)
         })
-
         return newRooms;
     } catch (err) {
         console.error("Can't fetch rooms from firestore", err);
-        throw (err);
+        throw err;
     }
 }
 

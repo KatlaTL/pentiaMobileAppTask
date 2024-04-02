@@ -3,15 +3,24 @@ import { StyleSheet } from "react-native";
 export const roomStyle = StyleSheet.create({
     roomList: {
         flexDirection: "column",
-        height: 250,
+        height: "auto",
         margin: 10,
     },
     room: {
         flex: 1,
         borderBottomColor: "Black",
         borderBottomWidth: 2,
-        height: 100,
-        justifyContent: "space-evenly",
+        height: "auto",
+        justifyContent: "space-evenly"
+    },
+    roomItems: {
+        width: "92%",
+    },
+    RoomItemSection: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 5,
+        marginTop: 5
     },
     title: {
         fontSize: 20,
@@ -24,10 +33,11 @@ export const roomStyle = StyleSheet.create({
     },
     floatRightWrapper: {
         alignSelf: "flex-end",
-        flexDirection: "row",
+        flexDirection: "row"
     },
     commentWrapper: {
         width: 40,
+        marginTop: 10,
         justifyContent: "space-evenly"
     },
     chatHeading: {

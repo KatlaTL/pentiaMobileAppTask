@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSelector } from "react-redux";
 import RoomsListItem from "./RoomsListItem";
 import { roomStyle } from "../../styles/roomStyle";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Main";
 import { useAppDispatch } from "../../redux/store/store";
 import { RoomListType, fetchRoomList, selectRoomList } from "../../redux/reducers/roomListSlice";
-import { useSelector } from "react-redux";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "RoomsList">;
 
