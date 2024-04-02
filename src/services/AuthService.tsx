@@ -10,6 +10,8 @@ type SignInErrorType = {
     error: FirebaseAuthTypes.NativeFirebaseAuthError | null,
 }
 
+export const onStateChange = (cb: FirebaseAuthTypes.AuthListenerCallback) => auth().onAuthStateChanged(cb);
+
 export const onGoogleSignIn = async (): Promise<SignInErrorType> => {
     try {
         const clientID = googleService.client[0].oauth_client.filter(obj => obj.client_type === 3)[0].client_id;
@@ -27,7 +29,7 @@ export const onGoogleSignIn = async (): Promise<SignInErrorType> => {
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
         // Sign-in the user with the credential
-        const error = await signInWithCredential(googleCredential);
+        const error = await signInUserWithCredential(googleCredential);
 
         if (error?.code) {
             switch (error.code) {
@@ -43,7 +45,6 @@ export const onGoogleSignIn = async (): Promise<SignInErrorType> => {
             }
         }
 
-        // Sign-in the user with the credential
         return { error };
 
     } catch (err) {
@@ -72,7 +73,7 @@ export const onFacebookSignIn = async (): Promise<SignInErrorType> => {
         const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
         // Sign-in the user with the credential
-        const error = await signInWithCredential(facebookCredential);
+        const error = await signInUserWithCredential(facebookCredential);
 
         if (error?.code) {
             switch (error.code) {
@@ -100,7 +101,7 @@ export const onFacebookSignIn = async (): Promise<SignInErrorType> => {
     }
 }
 
-const signInWithCredential = async (credential: FirebaseAuthTypes.AuthCredential): Promise<null | FirebaseAuthTypes.NativeFirebaseAuthError> => {
+const signInUserWithCredential = async (credential: FirebaseAuthTypes.AuthCredential): Promise<null | FirebaseAuthTypes.NativeFirebaseAuthError> => {
     // Sign-in the user with the credential
     return auth().signInWithCredential(credential)
         .then(async (user) => {

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../redux/store/store';
 import { UserType, login, logout, selectUser } from '../redux/reducers/userSlice';
 import { setInitializing, selectInitializing } from '../redux/reducers/appSlice';
+import { onStateChange } from '../services/AuthService';
 
 type AuthStatus = {
     user: UserType | null,
@@ -16,7 +17,7 @@ const useAuthStatus = (): AuthStatus => {
     const initializing = useSelector(selectInitializing)
 
     useEffect(() => {
-        const unsubscribe = auth().onAuthStateChanged(userState => {
+        const unsubscribe = onStateChange(userState => {
             if (userState) {
                 appDispatch(
                     login({
