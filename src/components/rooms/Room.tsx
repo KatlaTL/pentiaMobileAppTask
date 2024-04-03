@@ -11,7 +11,7 @@ import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
 import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
-import { MessageType, selectRoomMessages } from "../../redux/reducers/messageSlice";
+import { MessageType, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
@@ -56,15 +56,56 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const debounceFetchMoreMessages = debounce(() => fetchMoreMessages());
 
     useEffect(() => {
-        if (messagesSelector) {
-            setMessages(messagesSelector)
-        }
-    }, [messagesSelector]);
+        console.log("message length", messages.length);
+    }, [messages]);
 
     useEffect(() => {
-        const unsubscribe = getRoomMessagesSnapshot({ room_id, appDispatch, setLastDocument });
+        const onNextCB = (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+            setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
+            const docChanges = snapshot.docChanges();
+
+            // Return if its not the initial load
+            if (docChanges.length > 1 && messages.length > 0) {
+                return;
+            }
+
+            const snapshotMessages: MessageType[] = [];
+
+            // Use data in global storage if available, otherwise fetch it
+            if (docChanges.length > 1 && messagesSelector) {
+                snapshotMessages.push(...messagesSelector);
+            } else {
+                docChanges.forEach(querySnapshot => {
+                    if (querySnapshot.type === "added") {
+                        const data = querySnapshot.doc.data();
+                        const message = {
+                            ...data,
+                            date_created: data.date_created.toDate().toString(),
+                            message_id: querySnapshot.doc.id
+                        } as MessageType;
+                        snapshotMessages.push(message);
+                    }
+                });
+                appDispatch(setRoomMessages({ room_id, messages: snapshotMessages }));
+            }
+
+            setMessages(prev => {
+                console.log(prev.length)
+                console.log(snapshotMessages.length)
+                return [...prev, ...snapshotMessages.reverse()]
+            });
+        }
+
+        // TO-DO Fix bug with limit
+        let fetchLimit = 50;
+        if (messagesSelector) {
+            fetchLimit = 17;
+        }
+
+        const unsubscribe = getRoomMessagesSnapshot({ room_id, fetchLimit, onNextCB });
 
         return () => unsubscribe();
+
     }, []);
 
     const renderItem = useCallback(({ item }: { item: MessageType }) => (

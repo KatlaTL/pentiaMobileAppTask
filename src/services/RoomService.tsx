@@ -1,8 +1,6 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { RoomListType } from '../redux/reducers/roomListSlice';
-import { MessageType, setRoomMessages } from '../redux/reducers/messageSlice';
-import { AppDispatch } from '../redux/store/store';
-import { Dispatch, SetStateAction } from 'react';
+import { MessageType } from '../redux/reducers/messageSlice';
 import { UserType } from '../redux/reducers/userSlice';
 
 export const getAllRooms = async (): Promise<RoomListType[]> => {
@@ -27,36 +25,26 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
     }
 }
 
-export type fetchMessagesSnapshotOptions = {
+type fetchMessagesSnapshotOptions = {
     room_id: string,
     fetchLimit?: number,
-    appDispatch: AppDispatch,
-    setLastDocument: Dispatch<SetStateAction<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | undefined>>
+    onNextCB: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
+    onErrorCB?: (error: Error) => void
 }
 
-export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, appDispatch, setLastDocument }: fetchMessagesSnapshotOptions): () => void => {
+export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, onErrorCB }: fetchMessagesSnapshotOptions): () => void => {
     return firestore()
         .collection("rooms")
         .doc(room_id)
         .collection("messages")
         .orderBy("date_created", "desc")
         .limit(fetchLimit)
-        .onSnapshot((snapshot) => {
-            setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
-            const messages: MessageType[] = [];
-            snapshot.docChanges().forEach(change => {
-                if (change.type === "added") {
-                    const data = change.doc.data();
-                    const message = {
-                        ...data,
-                        date_created: data.date_created.toDate().toString(),
-                        message_id: change.doc.id
-                    } as MessageType;
-                    messages.push(message);
-                }
-            });
-            appDispatch(setRoomMessages({ room_id, messages: messages.reverse() }));
-        }, (err) => console.log(err));
+        .onSnapshot((snapshot) => onNextCB(snapshot), (err) => {
+            if (typeof onErrorCB === "function") {
+                onErrorCB(err)
+            }
+            console.error(err);
+        });
 }
 
 type fetchNextMessages = {
