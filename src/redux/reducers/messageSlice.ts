@@ -11,7 +11,10 @@ export type MessageType = {
 }
 
 type SliceState = {
-    [room_id: string]: MessageType[]
+    [room_id: string]: {
+        messages: MessageType[],
+        lastDocID: string
+    }
 }
 
 const initialState: SliceState = {}
@@ -21,16 +24,28 @@ const messageSlice = createSlice({
     name: "message",
     initialState,
     reducers: {
-        setRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[] }>) => {
+        setRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocId?: string }>) => {
             return {
-                [action.payload.room_id]: [...(state[action.payload.room_id]?.slice(1) || []), ...action.payload.messages]
+                [action.payload.room_id]: { 
+                    messages: [...(state[action.payload.room_id]?.messages || []), ...action.payload.messages],
+                    lastDocID: action.payload.lastDocId || state[action.payload.room_id]?.lastDocID
+                }
+            }
+        },
+        loadMoreRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocId?: string }>) => {
+            return {
+                [action.payload.room_id]: {
+                    messages: [...action.payload.messages, ...(state[action.payload.room_id]?.messages || [])],
+                    lastDocID: action.payload.lastDocId || state[action.payload.room_id]?.lastDocID
+                }
             }
         }
     }
 })
 
-export const { setRoomMessages } = messageSlice.actions;
+export const { setRoomMessages, loadMoreRoomMessages } = messageSlice.actions;
 
-export const selectRoomMessages = (room_id: string) => (state: RootState) => state.messages[room_id];
+export const selectRoomMessages = (room_id: string) => (state: RootState) => state.messages[room_id]?.messages;
+export const selectRoomLastDocID = (room_id: string) => (state: RootState) => state.messages[room_id]?.lastDocID;
 
 export default messageSlice;

@@ -25,9 +25,23 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
     }
 }
 
+export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> => {
+    return firestore()
+        .collection("rooms")
+        .doc(roomID)
+        .collection("messages")
+        .doc(docID)
+        .get()
+        .then(snapshot => snapshot)
+        .catch(err => {
+            throw err;
+        });
+}
+
 type fetchMessagesSnapshotOptions = {
     room_id: string,
     fetchLimit?: number,
+    startAfterDocID?: string,
     onNextCB: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
     onErrorCB?: (error: Error) => void
 }
@@ -39,12 +53,15 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, on
         .collection("messages")
         .orderBy("date_created", "desc")
         .limit(fetchLimit)
-        .onSnapshot((snapshot) => onNextCB(snapshot), (err) => {
+        .onSnapshot((querySnapshot) => {
+            onNextCB(querySnapshot)
+        }, (err) => {
             if (typeof onErrorCB === "function") {
                 onErrorCB(err)
             }
             console.error(err);
         });
+
 }
 
 type fetchNextMessages = {

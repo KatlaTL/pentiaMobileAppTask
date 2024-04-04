@@ -11,7 +11,7 @@ import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
 import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
-import { MessageType, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
+import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
@@ -21,12 +21,12 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
     const [lastDocument, setLastDocument] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
-    const [messages, setMessages] = useState<MessageType[]>([]);
     const [chatMessage, setChatMessage] = useState<string>("");
 
     const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);
     const messagesSelector = useSelector(selectRoomMessages(room_id));
+    const lastDocIDSelector = useSelector(selectRoomLastDocID(room_id));
 
     const handleClick = () => {
         if (chatMessage.length === 0) {
@@ -39,6 +39,32 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             .catch((err) => console.error(err));
     };
 
+    const handleMessageSnapshot = async (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+        setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
+        const docChanges = snapshot.docChanges();
+
+        // Return if its the initial load and the rooms messages are found in Redux
+        if (docChanges.length > 2 && messagesSelector) {
+            return;
+        }
+
+        const snapshotMessages: MessageType[] = [];
+
+        docChanges.forEach(querySnapshot => {
+            if (querySnapshot.type === "added") {
+                const data = querySnapshot.doc.data();
+                const message = {
+                    ...data,
+                    date_created: data.date_created.toDate().toString(),
+                    message_id: querySnapshot.doc.id
+                } as MessageType;
+                snapshotMessages.push(message);
+            }
+        });
+
+        appDispatch(setRoomMessages({ room_id, messages: snapshotMessages.reverse() }));
+    };
+
     const fetchMoreMessages = () => {
         if (lastDocument === undefined || isLoadingMessages) {
             return;
@@ -47,7 +73,8 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
         fetchNextMessages(room_id, lastDocument)
             .then(data => {
                 setLastDocument(data.lastDocument);
-                setMessages(prev => [...data.messages, ...prev]);
+                /* setMessages(prev => [...data.messages, ...prev]); */
+                appDispatch(loadMoreRoomMessages({ room_id, messages: data.messages }));
             })
             .catch(err => console.error(err))
             .finally(() => setIsLoadingMessages(false))
@@ -56,56 +83,12 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const debounceFetchMoreMessages = debounce(() => fetchMoreMessages());
 
     useEffect(() => {
-        console.log("message length", messages.length);
-    }, [messages]);
+        // Set fetchLimit to 3 if it's not the initial load. !important - FetchLimited most be a number above 2
+        const fetchLimit = messagesSelector ? 3 : 50;
 
-    useEffect(() => {
-        const onNextCB = (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
-            setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
-            const docChanges = snapshot.docChanges();
-
-            // Return if its not the initial load
-            if (docChanges.length > 1 && messages.length > 0) {
-                return;
-            }
-
-            const snapshotMessages: MessageType[] = [];
-
-            // Use data in global storage if available, otherwise fetch it
-            if (docChanges.length > 1 && messagesSelector) {
-                snapshotMessages.push(...messagesSelector);
-            } else {
-                docChanges.forEach(querySnapshot => {
-                    if (querySnapshot.type === "added") {
-                        const data = querySnapshot.doc.data();
-                        const message = {
-                            ...data,
-                            date_created: data.date_created.toDate().toString(),
-                            message_id: querySnapshot.doc.id
-                        } as MessageType;
-                        snapshotMessages.push(message);
-                    }
-                });
-                appDispatch(setRoomMessages({ room_id, messages: snapshotMessages }));
-            }
-
-            setMessages(prev => {
-                console.log(prev.length)
-                console.log(snapshotMessages.length)
-                return [...prev, ...snapshotMessages.reverse()]
-            });
-        }
-
-        // TO-DO Fix bug with limit
-        let fetchLimit = 50;
-        if (messagesSelector) {
-            fetchLimit = 17;
-        }
-
-        const unsubscribe = getRoomMessagesSnapshot({ room_id, fetchLimit, onNextCB });
+        const unsubscribe = getRoomMessagesSnapshot({ room_id, fetchLimit, onNextCB: handleMessageSnapshot });
 
         return () => unsubscribe();
-
     }, []);
 
     const renderItem = useCallback(({ item }: { item: MessageType }) => (
@@ -122,7 +105,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             <FlatList
                 contentContainerStyle={roomStyle.chatFlatList}
                 overScrollMode="never"
-                data={messages}
+                data={messagesSelector}
                 renderItem={renderItem}
                 keyExtractor={(item: MessageType) => item.message_id}
                 inverted
@@ -136,6 +119,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                     placeholderTextColor={"gray"}
                     onChangeText={text => setChatMessage(text)}
                     defaultValue={chatMessage}
+                    onSubmitEditing={handleClick}
                 />
                 <TouchableOpacity style={[roomStyle.chatButton, colors.blueBackgroundColor]} onPress={handleClick} disabled={chatMessage.length === 0}>
                     <Text style={[roomStyle.chatButtonText, colors.whiteTextColor]}>Send</Text>
