@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { globalStyle } from "../../styles/global";
 import { MemoizedMessage } from "./Message";
 import { useAppDispatch } from "../../redux/store/store";
-import { fetchNextMessages, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
+import { createMessageObject, getMoreMessagesAfterLastDocument, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 
@@ -19,7 +19,6 @@ type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const { room_id } = route.params;
 
-    const [lastDocument, setLastDocument] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [chatMessage, setChatMessage] = useState<string>("");
 
@@ -36,11 +35,10 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
         sendMessage(room_id, chatMessage, user)
             .then(() => setChatMessage(""))
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(err)); // TO-DO handle exceptions
     };
 
     const handleMessageSnapshot = async (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
-        setLastDocument(() => snapshot.docs[snapshot.docs.length - 1]);
         const docChanges = snapshot.docChanges();
 
         // Return if its the initial load and the rooms messages are found in Redux
@@ -49,34 +47,34 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
         }
 
         const snapshotMessages: MessageType[] = [];
+        let lastDocID;
 
-        docChanges.forEach(querySnapshot => {
+        docChanges.forEach((querySnapshot, index) => {
             if (querySnapshot.type === "added") {
-                const data = querySnapshot.doc.data();
-                const message = {
-                    ...data,
-                    date_created: data.date_created.toDate().toString(),
-                    message_id: querySnapshot.doc.id
-                } as MessageType;
-                snapshotMessages.push(message);
+                snapshotMessages.push(createMessageObject(querySnapshot.doc.data(), querySnapshot.doc.id));
+            }
+
+            // Save the lastDocID from the initial load
+            if (index === docChanges.length - 1 && docChanges.length > 2) {
+                lastDocID = querySnapshot.doc.id;
             }
         });
 
-        appDispatch(setRoomMessages({ room_id, messages: snapshotMessages.reverse() }));
+        appDispatch(setRoomMessages({ room_id, messages: snapshotMessages.reverse(), lastDocID }));
     };
 
     const fetchMoreMessages = () => {
-        if (lastDocument === undefined || isLoadingMessages) {
+        if ((lastDocIDSelector === "" || lastDocIDSelector === undefined) || isLoadingMessages) {
             return;
         }
+
         setIsLoadingMessages(true);
-        fetchNextMessages(room_id, lastDocument)
+
+        getMoreMessagesAfterLastDocument(room_id, lastDocIDSelector)
             .then(data => {
-                setLastDocument(data.lastDocument);
-                /* setMessages(prev => [...data.messages, ...prev]); */
-                appDispatch(loadMoreRoomMessages({ room_id, messages: data.messages }));
+                appDispatch(loadMoreRoomMessages({ room_id, messages: data.messages, lastDocID: data.lastDocumenID }));
             })
-            .catch(err => console.error(err))
+            .catch(err => console.error(err)) // TO-DO handle exceptions
             .finally(() => setIsLoadingMessages(false))
     };
 

@@ -61,38 +61,31 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, on
             }
             console.error(err);
         });
-
 }
 
 type fetchNextMessages = {
-    lastDocument: FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>,
-    messages: MessageType[]
+    messages: MessageType[],
+    lastDocumenID: string
 }
 
-export const fetchNextMessages = (room_id: string, lastDocument: FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>, limit: number = 20)
-    : Promise<fetchNextMessages> => {
+export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
+    const lastDoc = await getRoomSubCollectionDocByID(room_id, lastDocumenID);
 
     return firestore()
         .collection("rooms")
         .doc(room_id)
         .collection("messages")
         .orderBy("date_created", "desc")
-        .startAfter(lastDocument)
+        .startAfter(lastDoc)
         .limit(limit)
         .get()
-        .then((snapshot) => {
+        .then((querySnapshot) => {
             const arr: MessageType[] = [];
-            snapshot.forEach(value => {
-                const data = value.data();
-                const message = {
-                    ...data,
-                    date_created: data.date_created.toDate(),
-                    message_id: value.id
-                } as MessageType;
-                arr.push(message);
+            querySnapshot.forEach(snapshot => {
+                arr.push(createMessageObject(snapshot.data(), snapshot.id));
             });
             return {
-                lastDocument: snapshot.docs[snapshot.docs.length - 1],
+                lastDocumenID: querySnapshot.docs[querySnapshot.docs.length - 1]?.id || "",
                 messages: [...arr.reverse()]
             }
         })
@@ -129,3 +122,11 @@ export const sendMessage = (room_id: string, content: string, user?: UserType | 
             throw err
         })
 };
+
+export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, messageID: string): MessageType => {
+    return {
+        ...data,
+        date_created: data.date_created.toDate().toString(),
+        message_id: messageID
+    } as MessageType;
+}

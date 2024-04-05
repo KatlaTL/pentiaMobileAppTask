@@ -24,19 +24,19 @@ const messageSlice = createSlice({
     name: "message",
     initialState,
     reducers: {
-        setRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocId?: string }>) => {
+        setRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocID: string }>) => {
             return {
                 [action.payload.room_id]: { 
                     messages: [...(state[action.payload.room_id]?.messages || []), ...action.payload.messages],
-                    lastDocID: action.payload.lastDocId || state[action.payload.room_id]?.lastDocID
+                    lastDocID: action.payload.lastDocID || state[action.payload.room_id]?.lastDocID
                 }
             }
         },
-        loadMoreRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocId?: string }>) => {
+        loadMoreRoomMessages: (state, action: PayloadAction<{ room_id: string, messages: MessageType[], lastDocID: string }>) => {   
             return {
                 [action.payload.room_id]: {
                     messages: [...action.payload.messages, ...(state[action.payload.room_id]?.messages || [])],
-                    lastDocID: action.payload.lastDocId || state[action.payload.room_id]?.lastDocID
+                    lastDocID: action.payload.lastDocID
                 }
             }
         }
