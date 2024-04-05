@@ -12,24 +12,30 @@ export const debounce = <T extends (...agrs: any[]) => any>(func: T, wait: numbe
 }
 
 export type MessageTypeGrouppedByDate = {
-    [key: string]: MessageType[]
+    title: string,
+    data: MessageType[]
 }
 
-// TO-DO - replace current messages rendering with this
-export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByDate => {
+// TO-DO - using this method change message flatlist to sectionlist
+export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByDate[] => {
     return messageArray.reduce((accumulator, currentValue: MessageType) => {
-        const lastKey: string = Object.keys(accumulator)[Object.keys(accumulator).length - 1];
-        const accDate: Date = new Date(lastKey);
+        //const lastKey: string = Object.keys(accumulator)[Object.keys(accumulator).length - 1];
+        const lastDate: string = accumulator[accumulator.length - 1].title;
+        const accDate: Date = new Date(lastDate);
         const currentDate: Date = new Date(currentValue.date_created);
 
         if (isToday(accDate, currentDate)) {
-            const tempArr: MessageType[] = accumulator[lastKey];
-            tempArr.push(currentValue)
-            return { ...accumulator, [lastKey]: [...tempArr] };
+            const tempArr: MessageType[] = accumulator[accumulator.length - 1].data;
+            tempArr.push(currentValue);
+
+            const returnArr = [...accumulator];
+            returnArr[accumulator.length - 1].data = [...tempArr];
+
+            return returnArr;
         } else {
-            return { ...accumulator, [currentValue.date_created]: [currentValue] }
+            return [...accumulator, { title: currentValue.date_created, data: [currentValue] }];
         }
-    }, { [messageArray[0].date_created]: [messageArray[0]] })
+    }, [{ title: messageArray[0].date_created, data: new Array<MessageType>() }]);
 }
 
 export const isToday = (date1: Date, date2: Date): boolean => {
