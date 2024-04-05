@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "debug": "npx react-native start --experimental-debugger && npm run android"
+    "debug": "npx react-native start --experimental-debugger"
   },
   "dependencies": {
     "@firebase/auth": "^1.6.0",
