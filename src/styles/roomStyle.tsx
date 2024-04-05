@@ -50,21 +50,40 @@ export const roomStyle = StyleSheet.create({
     chatFlatList: {
         flexDirection: 'column-reverse',
     },
+    spaceBetweenChatBubbles: {
+        marginTop: "5%"
+    },
+    chatBubbleContainer: {
+        flexDirection: "row",
+        marginLeft: "5%",
+        marginBottom: 10,
+    },
+    chatBubbleContainerSelf: {
+        flexDirection: "row",
+        marginRight: "5%",
+        marginBottom: 10,
+        alignSelf: 'flex-end'
+    },
+    chatAvartar: {
+        height: 30,
+        width: 30,
+        alignSelf: "flex-end",
+        marginBottom: "1%",
+        borderRadius: 20,
+    },
     chatBubble: {
         padding: 10,
         borderRadius: 5,
-        marginBottom: 10,
         marginTop: 5,
-        marginLeft: "5%",
+        marginLeft: "2%",
         maxWidth: '50%',
         alignSelf: 'flex-start',
     },
     chatSelfBubble: {
         padding: 10,
         borderRadius: 5,
-        marginBottom: 10,
         marginTop: 5,
-        marginRight: "5%",
+        marginRight: "2%",
         maxWidth: '50%',
         alignSelf: 'flex-end',
     },
@@ -74,8 +93,22 @@ export const roomStyle = StyleSheet.create({
     },
     chatUser: {
         fontSize: 12,
+        marginLeft: "5%"
+    },
+    chatUserSelf: {
+        fontSize: 12,
+        marginRight: "5%",
+        alignSelf: "flex-end"
+    },
+    chatMessageDate: {
+        fontSize: 12,
         marginLeft: "5%",
-        marginTop: 5
+        alignSelf: "center"
+    },
+    chatMessageSelfDate: {
+        fontSize: 12,
+        marginRight: "5%",
+        alignSelf: "center"
     },
     chatInputWrapper: {
         flexDirection: "row",

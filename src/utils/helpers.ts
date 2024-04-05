@@ -15,13 +15,14 @@ export type MessageTypeGrouppedByDate = {
     [key: string]: MessageType[]
 }
 
+// TO-DO - replace current messages rendering with this
 export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByDate => {
     return messageArray.reduce((accumulator, currentValue: MessageType) => {
         const lastKey: string = Object.keys(accumulator)[Object.keys(accumulator).length - 1];
         const accDate: Date = new Date(lastKey);
         const currentDate: Date = new Date(currentValue.date_created);
 
-        if (isSameDate(accDate, currentDate)) {
+        if (isToday(accDate, currentDate)) {
             const tempArr: MessageType[] = accumulator[lastKey];
             tempArr.push(currentValue)
             return { ...accumulator, [lastKey]: [...tempArr] };
@@ -31,7 +32,7 @@ export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByD
     }, { [messageArray[0].date_created]: [messageArray[0]] })
 }
 
-export const isSameDate = (date1: Date, date2: Date): boolean => {
+export const isToday = (date1: Date, date2: Date): boolean => {
     return date1.getFullYear() === date2.getFullYear()
         && date1.getMonth() === date2.getMonth()
         && date1.getDate() === date2.getDate();
