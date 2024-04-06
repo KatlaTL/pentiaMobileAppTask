@@ -5,6 +5,7 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import googleService from '../../android/app/google-services.json';
 import { dialogueWithOK } from '../utils/dialogues';
 import errorMessages from "../constants/errorMessages.json"
+import { getFCMDeviceToken } from './NotificationService';
 
 type SignInErrorType = {
     error: FirebaseAuthTypes.NativeFirebaseAuthError | null,
@@ -107,13 +108,17 @@ const signInUserWithCredential = async (credential: FirebaseAuthTypes.AuthCreden
         .then(async (user) => {
             if (!user.user) throw "User doesn't exist";
 
+            // Get FCM device token and save it on the user
+            const FCMToken = await getFCMDeviceToken();
+
             // Save the user in firestore
             await firestore().collection("users").doc(user.user.uid).set({
                 email: user.user.email,
                 uid: user.user.uid,
                 user_name: user.user.displayName,
                 photo_url: user.user.photoURL,
-                date_created: new Date()
+                date_created: new Date(),
+                FCMToken: FCMToken
             });
 
             // Return null if no errors occurred

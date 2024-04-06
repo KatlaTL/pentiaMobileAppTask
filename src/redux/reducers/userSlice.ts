@@ -6,7 +6,7 @@ export type UserType = {
     uid: string,
     displayName: string | null,
     photoURL: string | null,
-    notificationsEnabled: boolean
+    FCMToken: string
 }
 
 type SliceState = {
@@ -26,16 +26,11 @@ const userSlice = createSlice({
         },
         logout: state => {
             state.user = null;
-        },
-        toggleNotifications: state => {
-            if (state.user) {
-                state.user.notificationsEnabled = !state.user.notificationsEnabled;
-            }
         }
     }
 })
 
-export const { login, logout, toggleNotifications } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
 

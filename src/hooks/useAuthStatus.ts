@@ -5,6 +5,7 @@ import { useAppDispatch } from '../redux/store/store';
 import { UserType, login, logout, selectUser } from '../redux/reducers/userSlice';
 import { setInitializing, selectInitializing } from '../redux/reducers/appSlice';
 import { onStateChange } from '../services/AuthService';
+import { getFCMDeviceToken } from '../services/NotificationService';
 
 type AuthStatus = {
     user: UserType | null,
@@ -17,7 +18,7 @@ const useAuthStatus = (): AuthStatus => {
     const initializing = useSelector(selectInitializing)
 
     useEffect(() => {
-        const unsubscribe = onStateChange(userState => {
+        const unsubscribe = onStateChange(async (userState) => {
             if (userState) {
                 appDispatch(
                     login({
@@ -25,7 +26,7 @@ const useAuthStatus = (): AuthStatus => {
                         uid: userState.uid,
                         displayName: userState.displayName,
                         photoURL: userState.photoURL,
-                        notificationsEnabled: false
+                        FCMToken: await getFCMDeviceToken()
                     }))
             } else {
                 appDispatch(logout());
