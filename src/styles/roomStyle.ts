@@ -76,7 +76,7 @@ export const roomStyle = StyleSheet.create({
         borderRadius: 5,
         marginTop: 5,
         marginLeft: "2%",
-        maxWidth: '50%',
+        maxWidth: '60%',
         alignSelf: 'flex-start',
     },
     chatSelfBubble: {
@@ -84,7 +84,7 @@ export const roomStyle = StyleSheet.create({
         borderRadius: 5,
         marginTop: 5,
         marginRight: "2%",
-        maxWidth: '50%',
+        maxWidth: '60%',
         alignSelf: 'flex-end',
     },
     chatBubbleText: {
