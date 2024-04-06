@@ -24,7 +24,7 @@ export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByD
         const accDate: Date = new Date(lastDate);
         const currentDate: Date = new Date(currentValue.date_created);
 
-        if (isToday(accDate, currentDate)) {
+        if (isSameDate(accDate, currentDate)) {
             const tempArr: MessageType[] = accumulator[accumulator.length - 1].data;
             tempArr.push(currentValue);
 
