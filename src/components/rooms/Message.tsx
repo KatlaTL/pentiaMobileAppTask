@@ -4,7 +4,7 @@ import { roomStyle } from "../../styles/roomStyle";
 import { Image, Text, View } from "react-native";
 import { UserType } from "../../redux/reducers/userSlice";
 import { MessageType } from "../../redux/reducers/messageSlice";
-import { isToday } from "../../utils/helpers";
+import { isSameDate } from "../../utils/helpers";
 
 type Message = {
     item: MessageType,
@@ -16,7 +16,7 @@ const Message = ({ item, user }: Message): React.JSX.Element => {
 
     const today: Date = new Date();
     const messageDate: Date = new Date(item.date_created);
-    const showTimeString: boolean = isToday(today, messageDate);
+    const showTimeString: boolean = isSameDate(today, messageDate);
 
     const dateFormat: Intl.DateTimeFormatOptions = showTimeString ? {
         hour: "numeric",
