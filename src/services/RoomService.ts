@@ -130,3 +130,41 @@ export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, m
         message_id: messageID
     } as MessageType;
 }
+
+export const addUserToRoomSubscriberList = async (roomID: string, userID: string): Promise<void | { error: any }> => {
+    try {
+        await firestore().collection("rooms").doc(roomID).update({
+            subscribers_uid: firestore.FieldValue.arrayUnion(userID)
+        });
+    } catch (err) {
+        return {
+            error: err
+        }
+    }
+}
+
+type roomSubscriberListReturnType = {
+    subscribersList: string[] | null,
+    error: any | null
+}
+
+export const getRoomSubscriberList = async (roomID: string): Promise<roomSubscriberListReturnType> => {
+    return await firestore()
+        .collection("rooms")
+        .doc(roomID)
+        .get()
+        .then(room => {
+            if (!room) throw "Room doesn't exist";
+
+            return {
+                subscribersList: room.data()?.subscribers_uid as string[],
+                error: null
+            }
+        })
+        .catch(err => {
+            return {
+                subscribersList: null,
+                error: err
+            }
+        })
+}

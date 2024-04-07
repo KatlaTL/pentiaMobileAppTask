@@ -13,7 +13,7 @@ import { useAppDispatch } from "../../redux/store/store";
 import { createMessageObject, getMoreMessagesAfterLastDocument, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
-import { enableNotificationsForRoomID } from "../../services/NotificationService";
+import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
@@ -32,12 +32,18 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
         if (chatMessage.length === 0) {
             return
         }
+
         Keyboard.dismiss();
 
-        await enableNotificationsForRoomID(room_id);
-
         sendMessage(room_id, chatMessage, user)
-            .then(() => setChatMessage(""))
+            .then(async () => {
+                setChatMessage("");
+
+                // Enable notifications if the user gives permissions
+                await enableNotificationsForRoomID(room_id, user?.uid || "");
+
+                await sendNotificationOnNewMessage(room_id);
+            })
             .catch((err) => console.error(err)); // TO-DO handle exceptions
     };
 

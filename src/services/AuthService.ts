@@ -1,11 +1,12 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import googleService from '../../android/app/google-services.json';
 import { dialogueWithOK } from '../utils/dialogues';
 import errorMessages from "../constants/errorMessages.json"
 import { getFCMDeviceToken } from './NotificationService';
+import { UserType } from '../redux/reducers/userSlice';
 
 type SignInErrorType = {
     error: FirebaseAuthTypes.NativeFirebaseAuthError | null,
@@ -118,7 +119,7 @@ const signInUserWithCredential = async (credential: FirebaseAuthTypes.AuthCreden
                 user_name: user.user.displayName,
                 photo_url: user.user.photoURL,
                 date_created: new Date(),
-                FCMToken: FCMToken
+                ...(FCMToken && { FCMToken })
             });
 
             // Return null if no errors occurred
@@ -158,4 +159,64 @@ export const signOut = (): void => {
     auth().signOut()
         .then(() => console.log("User has been logged out"))
         .catch(err => console.error("Can't log out", err));
+}
+
+type userReturnType = {
+    user: UserType | null,
+    error: any | null
+}
+
+export const getUserByID = async (userID: string): Promise<userReturnType> => {
+    return await firestore()
+        .collection("users")
+        .doc(userID)
+        .get()
+        .then(user => {
+            if (!user) throw "User doesn't exist";
+            return {
+                user: {
+                    ...user.data()
+                } as UserType,
+                error: null
+            };
+        })
+        .catch(err => {
+            return {
+                user: null,
+                error: err
+            }
+        });
+}
+
+export const updateUserByID = async (userID: string, data): Promise<void | { error: any }> => {
+    try {
+        await firestore().collection("users").doc(userID).update(data);
+    } catch (err) {
+        return {
+            error: err
+        }
+    }
+}
+
+export const getAllFCMTokensByUserIDs = async (userIDs: string[]): Promise<string[]> => {
+    try {
+        const tokenArray: string[] = [];
+
+        const data = await firestore()
+            .collection("users")
+            .where(firestore.FieldPath.documentId(), "in", userIDs)
+            .get();
+
+        data.docs.forEach(snapshot => {
+            const data = snapshot.data();
+            if (data.FCMToken) {
+                tokenArray.push(data.FCMToken);
+            }
+        })
+
+        return tokenArray;
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
