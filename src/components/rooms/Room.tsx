@@ -39,9 +39,10 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             .then(async () => {
                 setChatMessage("");
 
-                // Enable notifications if the user gives permissions
+                // Enable notifications if the user gives permission
                 await enableNotificationsForRoomID(room_id, user?.uid || "");
 
+                // Send notification to users who gave permission
                 await sendNotificationOnNewMessage(room_id);
             })
             .catch((err) => console.error(err)); // TO-DO handle exceptions
