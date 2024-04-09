@@ -116,6 +116,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation project(':react-native-fbsdk-next')
+    implementation 'com.google.firebase:firebase-storage'
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

@@ -5,10 +5,23 @@ export const dialogueWithOK = (title: string, message: string, onPressOK?: Funct
         { text: "OK", onPress: onPressOK ? () => onPressOK() : () => null },
     ]);
 }
+type dialogueWithTwoOptionsType = {
+    title: string,
+    message: string,
+    optionOne: {
+        onPress: Function,
+        text: string
+    },
+    optionTwo: {
+        onPress: Function,
+        text: string
+    }
+}
 
-export const dialogueWithYesAndNo = (title: string, message: string, onPressYes: Function, onPressNo?: Function) => {
+export const dialogueWithTwoOptions = ({ title, message, optionOne, optionTwo }: dialogueWithTwoOptionsType) => {
     Alert.alert(title, message, [
-        { text: "Yes", onPress: () => onPressYes() },
-        { text: "No", onPress: onPressNo ? () => onPressNo() : () => null }
+        { text: optionOne.text, onPress: () => optionOne.onPress() },
+        { text: optionTwo.text, onPress: () => optionTwo.onPress() },
+        { text: "Cancel", onPress: () => null }
     ]);
 }

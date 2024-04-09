@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Button, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { roomStyle } from "../../styles/roomStyle";
 import { colors } from "../../styles/colors";
@@ -14,6 +14,8 @@ import { createMessageObject, getMoreMessagesAfterLastDocument, getRoomMessagesS
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
+import { uploadImage } from "../../services/ImageService";
+import { dialogueWithTwoOptions } from "../../utils/dialogues";
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
 
@@ -27,6 +29,21 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     const user = useSelector(selectUser);
     const messagesSelector = useSelector(selectRoomMessages(room_id));
     const lastDocIDSelector = useSelector(selectRoomLastDocID(room_id));
+
+    const onImagePicker = async () => {
+        dialogueWithTwoOptions({
+            title: "Upload Photo",
+            message: "Upload a photo from the gallery or take a new photo with your camera",
+            optionOne: {
+                text: "Go to gallery",
+                onPress: async () => await uploadImage(room_id, user, true)
+            },
+            optionTwo: {
+                text: "Go to camera",
+                onPress: async () => await uploadImage(room_id, user, false)
+            }
+        });
+    }
 
     const handleClick = async () => {
         if (chatMessage.length === 0) {
@@ -121,6 +138,9 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
                 onEndReached={debounceFetchMoreMessages}
             />
             <View style={roomStyle.chatInputWrapper}>
+                <TouchableOpacity style={[roomStyle.uploadPhoto, colors.purpleBackgroundColor]} onPress={onImagePicker}>
+                    <Text style={[roomStyle.uploadPhotoText, colors.whiteTextColor]}>Upload Photo</Text>
+                </TouchableOpacity>
                 <TextInput
                     style={roomStyle.chatInputField}
                     placeholder="Aa"

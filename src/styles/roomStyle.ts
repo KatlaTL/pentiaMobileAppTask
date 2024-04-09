@@ -50,6 +50,26 @@ export const roomStyle = StyleSheet.create({
     chatFlatList: {
         flexDirection: 'column-reverse',
     },
+    uploadedImage: {
+        height: 225, 
+        width: 225, 
+        borderWidth: 1, 
+        borderColor: "black",
+        borderRadius: 5,
+        marginTop: 5,
+        marginLeft: "2%",
+        alignSelf: 'flex-start',
+    },
+    uploadedImageSelf: {
+        height: 225, 
+        width: 225, 
+        borderWidth: 1, 
+        borderColor: "black",
+        borderRadius: 5,
+        marginTop: 5,
+        marginRight: "2%",
+        alignSelf: 'flex-end',
+    },
     spaceBetweenChatBubbles: {
         marginTop: "5%"
     },
@@ -120,20 +140,31 @@ export const roomStyle = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        marginRight: "5%",
+        marginRight: "3%",
         borderRadius: 5,
     },
     chatButtonText: {
-        fontSize: 22
+        fontSize: 22,
+        fontWeight: "500"
     },
     chatInputField: {
-        flex: 4,
+        flex: 3,
         borderColor: "black",
         borderWidth: 1,
         fontSize: 20,
         fontWeight: "bold",
         paddingLeft: 10,
-        marginLeft: "5%",
         borderRadius: 5,
+    },
+    uploadPhoto: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
+        marginLeft: "3%"
+    },
+    uploadPhotoText: {
+        fontSize: 16,
+        fontWeight: "500"
     }
 });

@@ -23,7 +23,7 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
         console.error("Can't fetch rooms from firestore", err);
         throw err;
     }
-}
+};
 
 export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> => {
     return firestore()
@@ -36,7 +36,7 @@ export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Prom
         .catch(err => {
             throw err;
         });
-}
+};
 
 type fetchMessagesSnapshotOptions = {
     room_id: string,
@@ -44,7 +44,7 @@ type fetchMessagesSnapshotOptions = {
     startAfterDocID?: string,
     onNextCB: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
     onErrorCB?: (error: Error) => void
-}
+};
 
 export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, onErrorCB }: fetchMessagesSnapshotOptions): () => void => {
     return firestore()
@@ -61,12 +61,12 @@ export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, on
             }
             console.error(err);
         });
-}
+};
 
 type fetchNextMessages = {
     messages: MessageType[],
     lastDocumenID: string
-}
+};
 
 export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
     const lastDoc = await getRoomSubCollectionDocByID(room_id, lastDocumenID);
@@ -94,7 +94,7 @@ export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocu
         })
 };
 
-export const sendMessage = (room_id: string, content: string, user?: UserType | null): Promise<void> => {
+export const sendMessage = (room_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
     const roomReference = firestore().collection("rooms").doc(room_id);
 
     return firestore().runTransaction(async transaction => {
@@ -107,20 +107,21 @@ export const sendMessage = (room_id: string, content: string, user?: UserType | 
         transaction.set(roomReference.collection("messages").doc(), {
             content: content,
             date_created: firestore.FieldValue.serverTimestamp(),
-            type: "text",
+            type: type || "text",
             uid: user?.uid,
             user_name: user?.displayName
-        })
+        });
 
         transaction.update(roomReference, {
             total_messages: firestore.FieldValue.increment(1),
             date_last_message: firestore.FieldValue.serverTimestamp()
-        })
+        });
     })
         .then(() => Promise.resolve())
         .catch(err => {
             throw err
-        })
+        });
+
 };
 
 export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, messageID: string): MessageType => {
@@ -129,7 +130,7 @@ export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, m
         date_created: data.date_created.toDate().toString(),
         message_id: messageID
     } as MessageType;
-}
+};
 
 export const addUserToRoomSubscriberList = async (roomID: string, userID: string): Promise<void | { error: any }> => {
     try {
@@ -141,12 +142,12 @@ export const addUserToRoomSubscriberList = async (roomID: string, userID: string
             error: err
         }
     }
-}
+};
 
 type roomSubscriberListReturnType = {
     subscribersList: string[] | null,
     error: any | null
-}
+};
 
 export const getRoomSubscriberList = async (roomID: string): Promise<roomSubscriberListReturnType> => {
     return await firestore()
@@ -157,7 +158,7 @@ export const getRoomSubscriberList = async (roomID: string): Promise<roomSubscri
             if (!room) throw "Room doesn't exist";
 
             return {
-                subscribersList: room.data()?.subscribers_uid as string[],
+                subscribersList: room.data()?.subscribers_uid || [] as string[],
                 error: null
             }
         })
@@ -167,4 +168,4 @@ export const getRoomSubscriberList = async (roomID: string): Promise<roomSubscri
                 error: err
             }
         })
-}
+};
