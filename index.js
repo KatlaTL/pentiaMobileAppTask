@@ -9,9 +9,4 @@ LogBox.ignoreLogs([
     'If you want to use Reanimated 2 then go through our installation steps',
 ]);
 
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-    //TO-DO handle notification clicks
-    console.log("Message handled in the background!", remoteMessage)
-})
-
 AppRegistry.registerComponent(appName, () => App);

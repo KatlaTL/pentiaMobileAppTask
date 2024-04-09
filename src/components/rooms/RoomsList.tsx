@@ -25,9 +25,9 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
 
     useEffect(() => {
         getRoomList();
-    }, [])
+    }, []);
 
-    useEffect(() => setRooms(roomList), [roomList])
+    useEffect(() => setRooms(roomList), [roomList]);
 
     const listOfRooms = rooms.map((roomProps: RoomListType, index) => {
         return <RoomsListItem
@@ -35,7 +35,7 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
             handleClick={() => navigation.navigate("Room", { room_id: roomProps.room_id, room_name: roomProps.room_name })}
             key={roomProps.room_name + index}
         />
-    })
+    });
 
     return (
         <ScrollView

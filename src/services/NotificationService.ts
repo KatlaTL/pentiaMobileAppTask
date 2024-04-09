@@ -88,7 +88,7 @@ export const sendNotificationOnNewMessage = async (roomID: string) => {
             FCMTokens = await getAllFCMTokensByUserIDs(subscriberList.subscribersList);
         }
 
-        console.log(FCMTokens);
+        console.log("FCMTokens", FCMTokens);
 
         //TO-DO send push notification using REST api v1
 

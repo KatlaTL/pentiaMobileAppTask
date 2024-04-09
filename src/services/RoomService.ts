@@ -69,59 +69,67 @@ type fetchNextMessages = {
 };
 
 export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
-    const lastDoc = await getRoomSubCollectionDocByID(room_id, lastDocumenID);
+    try {
+        const lastDoc = await getRoomSubCollectionDocByID(room_id, lastDocumenID);
 
-    return firestore()
-        .collection("rooms")
-        .doc(room_id)
-        .collection("messages")
-        .orderBy("date_created", "desc")
-        .startAfter(lastDoc)
-        .limit(limit)
-        .get()
-        .then((querySnapshot) => {
-            const arr: MessageType[] = [];
-            querySnapshot.forEach(snapshot => {
-                arr.push(createMessageObject(snapshot.data(), snapshot.id));
-            });
-            return {
-                lastDocumenID: querySnapshot.docs[querySnapshot.docs.length - 1]?.id || "",
-                messages: [...arr.reverse()]
-            }
-        })
-        .catch(err => {
-            throw err;
-        })
+        return firestore()
+            .collection("rooms")
+            .doc(room_id)
+            .collection("messages")
+            .orderBy("date_created", "desc")
+            .startAfter(lastDoc)
+            .limit(limit)
+            .get()
+            .then((querySnapshot) => {
+                const arr: MessageType[] = [];
+                querySnapshot.forEach(snapshot => {
+                    arr.push(createMessageObject(snapshot.data(), snapshot.id));
+                });
+                return {
+                    lastDocumenID: querySnapshot.docs[querySnapshot.docs.length - 1]?.id || "",
+                    messages: [...arr.reverse()]
+                }
+            })
+            .catch(err => {
+                throw err;
+            })
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const sendMessage = (room_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
-    const roomReference = firestore().collection("rooms").doc(room_id);
+    try {
 
-    return firestore().runTransaction(async transaction => {
-        const roomSnapshot = await transaction.get(roomReference);
+        const roomReference = firestore().collection("rooms").doc(room_id);
 
-        if (!roomSnapshot.exists) {
-            throw "Room does not exisit";
-        }
+        return firestore().runTransaction(async transaction => {
+            const roomSnapshot = await transaction.get(roomReference);
 
-        transaction.set(roomReference.collection("messages").doc(), {
-            content: content,
-            date_created: firestore.FieldValue.serverTimestamp(),
-            type: type || "text",
-            uid: user?.uid,
-            user_name: user?.displayName
-        });
+            if (!roomSnapshot.exists) {
+                throw "Room does not exisit";
+            }
 
-        transaction.update(roomReference, {
-            total_messages: firestore.FieldValue.increment(1),
-            date_last_message: firestore.FieldValue.serverTimestamp()
-        });
-    })
-        .then(() => Promise.resolve())
-        .catch(err => {
-            throw err
-        });
+            transaction.set(roomReference.collection("messages").doc(), {
+                content: content,
+                date_created: firestore.FieldValue.serverTimestamp(),
+                type: type || "text",
+                uid: user?.uid,
+                user_name: user?.displayName
+            });
 
+            transaction.update(roomReference, {
+                total_messages: firestore.FieldValue.increment(1),
+                date_last_message: firestore.FieldValue.serverTimestamp()
+            });
+        })
+            .then(() => Promise.resolve())
+            .catch(err => {
+                throw err
+            });
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, messageID: string): MessageType => {
