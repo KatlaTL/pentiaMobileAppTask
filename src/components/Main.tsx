@@ -10,12 +10,14 @@ import { signOut } from "../services/AuthService";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
+import SplashScreen from "./Splash";
 
 export type RootStackParamList = {
     SignIn: undefined,
     RoomsList: undefined,
     Room: { room_id: string, room_name: string },
-    Root: undefined
+    Root: undefined,
+    Splash: undefined
 }
 
 export type RootDrawerParamList = {
@@ -25,7 +27,7 @@ export type RootDrawerParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
-const Root = (): React.JSX.Element => {  
+const Root = (): React.JSX.Element => {
     return (
         <Drawer.Navigator screenOptions={{
             headerStyle: colors.orangeBackgroundColor,
@@ -53,14 +55,6 @@ const Root = (): React.JSX.Element => {
 const Main = (): React.JSX.Element => {
     const { user, initializing } = useAuthStatus();
 
-    if (initializing) {
-        return (
-            <View style={globalStyle.activityIndicator}>
-                <ActivityIndicator size={100} color="#0000ff" />
-            </View>
-        );
-    }
-
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -70,22 +64,27 @@ const Main = (): React.JSX.Element => {
                     headerTitleStyle: {
                         fontWeight: 'bold',
                     },
-                    headerTitleAlign: "center"
+                    headerTitleAlign: "center",
+                    animation: "slide_from_right"
                 }}
                 initialRouteName={user ? "Root" : "SignIn"}
             >
-                {user ? (
-                    <>
-                        <Stack.Screen name="Root" component={Root} options={{ headerShown: false }} />
-                        <Stack.Screen name="Room" component={Room} options={({ route }) => ({ title: route.params.room_name })} />
-                    </>
+                {initializing ? (
+                    <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
                 ) : (
-                    <>
-                        <Stack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
-                    </>
+                    user ? (
+                        <>
+                            <Stack.Screen name="Root" component={Root} options={{ headerShown: false }} />
+                            <Stack.Screen name="Room" component={Room} options={({ route }) => ({ title: route.params.room_name })} />
+                        </>
+                    ) : (
+                        <>
+                            <Stack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
+                        </>
+                    )
                 )}
             </Stack.Navigator>
-        </NavigationContainer>
+        </NavigationContainer >
     )
 }
 
