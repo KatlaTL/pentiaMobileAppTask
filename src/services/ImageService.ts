@@ -2,7 +2,6 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { sendMessage } from './RoomService';
 import { UserType } from '../redux/reducers/userSlice';
-import Permissions from 'react-native-permissions';
 
 export const uploadImage = async (room_id: string, user: UserType | null, fromLibrary: boolean): Promise<void> => {
     try {
