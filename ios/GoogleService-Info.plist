@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>767477628703-bajr2q8cvajksb8iqvf9rsito6a74g76.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.767477628703-bajr2q8cvajksb8iqvf9rsito6a74g76</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>767477628703-s4jd3471giqjff3s4a3prhf06p6jpdb5.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBqEfLnPVoKjK7CF17HsxvsWdoCcD9ULvE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>767477628703</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.simpleReactNativeChattingApp</string>
+	<key>PROJECT_ID</key>
+	<string>pentiamobileapptask</string>
+	<key>STORAGE_BUCKET</key>
+	<string>pentiamobileapptask.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:767477628703:ios:4d8c694c0f31d891343a2a</string>
+</dict>
+</plist>
