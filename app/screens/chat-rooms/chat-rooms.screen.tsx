@@ -1,16 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { ListItem } from "./_components/list-item";
 import { roomStyle } from "../../assets/styles/roomStyle";
-import { RootStackParamList } from "../../components/Main";
 import { useAppDispatch } from "../../redux/store/store";
 import { RoomListType, fetchRoomList, selectRoomList } from "../../redux/reducers/roomListSlice";
+import { ChatRoomsNavigationProps } from "../../navigators/app.navigator";
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "ChatRooms">;
 
-const ChatRoomsScreen = ({ navigation }: NavigationProps): React.JSX.Element => {
+const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.Element => {
     const [rooms, setRooms] = useState<RoomListType[]>([]);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const appDispatch = useAppDispatch();

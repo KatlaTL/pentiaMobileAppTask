@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Button, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { roomStyle } from "../../assets/styles/roomStyle";
 import { colors } from "../../assets/styles/colors";
 import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
-import { RootStackParamList } from "../../components/Main";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { globalStyle } from "../../assets/styles/global";
 import { MemoizedMessage } from "./_components/message";
 import { useAppDispatch } from "../../redux/store/store";
@@ -16,10 +14,10 @@ import { debounce } from "../../utils/helpers";
 import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
 import { uploadImage } from "../../services/ImageService";
 import { dialogueWithTwoOptions } from "../../utils/dialogues";
+import { ChatNavigationProps } from "../../navigators/app.navigator";
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "Chat">;
 
-const ChatScreen = ({ route }: NavigationProps): React.JSX.Element => {
+const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
     const { chat_id } = route.params;
 
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
