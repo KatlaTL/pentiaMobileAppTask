@@ -1,14 +1,14 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { RoomListType } from '../redux/reducers/roomListSlice';
+import { ChatRoomListType } from '../redux/reducers/chatRoomListSlice';
 import { MessageType } from '../redux/reducers/messageSlice';
 import { UserType } from '../redux/reducers/userSlice';
 
-export const getAllRooms = async (): Promise<RoomListType[]> => {
+export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
     try {
         const rooms = await firestore().collection("rooms").orderBy("date_last_message", "desc").get();
-        const newRooms: RoomListType[] = [];
+        const newRooms: ChatRoomListType[] = [];
         rooms.forEach(value => {
-            const data = value.data() as RoomListType;
+            const data = value.data() as ChatRoomListType;
             newRooms.push({
                 chat_name: data.chat_name,
                 description: data.description,
@@ -16,7 +16,7 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
                 total_messages: data.total_messages,
                 chat_id: value.id,
                 date_last_message: value.data().date_last_message.toDate().toString(),
-            } as RoomListType)
+            } as ChatRoomListType)
         })
         return newRooms;
     } catch (err) {
@@ -25,7 +25,7 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
     }
 };
 
-export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> => {
+export const getChatRoomSubCollectionDocByID = (roomID: string, docID: string): Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> => {
     return firestore()
         .collection("rooms")
         .doc(roomID)
@@ -38,7 +38,7 @@ export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Prom
         });
 };
 
-type fetchMessagesSnapshotOptions = {
+type FetchMessagesSnapshotOptionsType = {
     chat_id: string,
     fetchLimit?: number,
     startAfterDocID?: string,
@@ -46,7 +46,7 @@ type fetchMessagesSnapshotOptions = {
     onErrorCB?: (error: Error) => void
 };
 
-export const getRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: fetchMessagesSnapshotOptions): () => void => {
+export const getChatRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: FetchMessagesSnapshotOptionsType): () => void => {
     return firestore()
         .collection("rooms")
         .doc(chat_id)
@@ -63,14 +63,14 @@ export const getRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, on
         });
 };
 
-type fetchNextMessages = {
+type FetchNextMessagesType = {
     messages: MessageType[],
     lastDocumenID: string
 };
 
-export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
+export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocumenID: string, limit: number = 20): Promise<FetchNextMessagesType> => {
     try {
-        const lastDoc = await getRoomSubCollectionDocByID(chat_id, lastDocumenID);
+        const lastDoc = await getChatRoomSubCollectionDocByID(chat_id, lastDocumenID);
 
         return firestore()
             .collection("rooms")
@@ -140,7 +140,7 @@ export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, m
     } as MessageType;
 };
 
-export const addUserToRoomSubscriberList = async (roomID: string, userID: string): Promise<void | { error: any }> => {
+export const addUserToChatRoomSubscriberList = async (roomID: string, userID: string): Promise<void | { error: any }> => {
     try {
         await firestore().collection("rooms").doc(roomID).update({
             subscribers_uid: firestore.FieldValue.arrayUnion(userID)
@@ -152,12 +152,12 @@ export const addUserToRoomSubscriberList = async (roomID: string, userID: string
     }
 };
 
-type roomSubscriberListReturnType = {
+type ChatRoomSubscriberListReturnType = {
     subscribersList: string[] | null,
     error: any | null
 };
 
-export const getRoomSubscriberList = async (roomID: string): Promise<roomSubscriberListReturnType> => {
+export const getChatRoomSubscriberList = async (roomID: string): Promise<ChatRoomSubscriberListReturnType> => {
     return await firestore()
         .collection("rooms")
         .doc(roomID)

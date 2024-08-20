@@ -1,7 +1,7 @@
 import notifee, { AuthorizationStatus } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import { getAllFCMTokensByUserIDs, getUserByID, updateUserByID } from './AuthService';
-import { addUserToRoomSubscriberList, getRoomSubscriberList } from './RoomService';
+import { addUserToChatRoomSubscriberList, getChatRoomSubscriberList } from './ChatRoomService';
 
 export const enableNotificationsForRoomID = async (roomID: string, userID: string): Promise<void> => {
     try {
@@ -36,7 +36,7 @@ export const enableNotificationsForRoomID = async (roomID: string, userID: strin
             }
         }
 
-        const roomNotificationUpdateError = await addUserToRoomSubscriberList(roomID, userID);
+        const roomNotificationUpdateError = await addUserToChatRoomSubscriberList(roomID, userID);
 
         if (roomNotificationUpdateError) {
             throw "Something went wrong while updating room notification list";
@@ -75,7 +75,7 @@ export const getFCMDeviceToken = async (): Promise<string> => {
 export const sendNotificationOnNewMessage = async (roomID: string) => {
     try {
         // Get list of users that are to receive notifications
-        const subscriberList = await getRoomSubscriberList(roomID);
+        const subscriberList = await getChatRoomSubscriberList(roomID);
 
         if (subscriberList.error) {
             throw "Problem with receiving subscriber list";

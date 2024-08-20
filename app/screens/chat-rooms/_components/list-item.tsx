@@ -3,10 +3,10 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { Text, TouchableOpacity, View } from "react-native";
 import { roomStyle } from "../../../assets/styles/roomStyle";
 import Comment from "../../../assets/img/comment.svg";
-import { RoomListType } from "../../../redux/reducers/roomListSlice";
+import { ChatRoomListType } from "../../../redux/reducers/chatRoomListSlice";
 import { ItemSection } from "./item-section";
 
-interface ListType extends RoomListType {
+interface ListType extends ChatRoomListType {
     handleClick: () => void
 }
 

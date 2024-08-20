@@ -161,12 +161,12 @@ export const signOut = (): void => {
         .catch(err => console.error("Can't log out", err));
 }
 
-type userReturnType = {
+type UserReturnType = {
     user: UserType | null,
     error: any | null
 }
 
-export const getUserByID = async (userID: string): Promise<userReturnType> => {
+export const getUserByID = async (userID: string): Promise<UserReturnType> => {
     return await firestore()
         .collection("users")
         .doc(userID)

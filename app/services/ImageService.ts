@@ -1,6 +1,6 @@
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import { sendMessage } from './RoomService';
+import { sendMessage } from './ChatRoomService';
 import { UserType } from '../redux/reducers/userSlice';
 
 export const uploadImage = async (chat_id: string, user: UserType | null, fromLibrary: boolean): Promise<void> => {

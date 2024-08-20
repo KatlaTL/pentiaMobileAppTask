@@ -8,7 +8,7 @@ import { selectUser } from "../../redux/reducers/userSlice";
 import { globalStyle } from "../../assets/styles/global";
 import { MemoizedMessage } from "./_components/message";
 import { useAppDispatch } from "../../redux/store/store";
-import { createMessageObject, getMoreMessagesAfterLastDocument, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
+import { createMessageObject, getMoreMessagesAfterLastDocument, getChatRoomMessagesSnapshot, sendMessage } from "../../services/ChatRoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
@@ -109,7 +109,7 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         // Set fetchLimit to 3 if it's not the initial load. !important - FetchLimited most be a number above 2
         const fetchLimit = messagesSelector ? 3 : 50;
 
-        const unsubscribe = getRoomMessagesSnapshot({ chat_id, fetchLimit, onNextCB: handleMessageSnapshot });
+        const unsubscribe = getChatRoomMessagesSnapshot({ chat_id, fetchLimit, onNextCB: handleMessageSnapshot });
 
         return () => unsubscribe();
     }, []);
