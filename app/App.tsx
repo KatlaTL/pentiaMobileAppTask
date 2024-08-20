@@ -1,8 +1,8 @@
 import 'react-native-gesture-handler';
 import React from "react";
-import store from "./src/redux/store/store";
+import store from "./redux/store/store";
 import { Provider } from "react-redux";
-import Main from "./src/components/Main";
+import Main from "./components/Main";
 
 const App = (): React.JSX.Element => {
     return (

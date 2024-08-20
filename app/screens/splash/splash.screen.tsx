@@ -1,5 +1,5 @@
 import { ActivityIndicator, View } from "react-native";
-import { globalStyle } from "../styles/global";
+import { globalStyle } from "../../assets/styles/global";
 
 const SplashScreen = (): React.JSX.Element => {
     return (

@@ -1,15 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import { signInStyle as styles } from "../../styles/signInStyle";
-import { colors } from "../../styles/colors";
+import { signInStyle as styles } from "../../assets/styles/signInStyle";
+import { colors } from "../../assets/styles/colors";
 import { onFacebookSignIn, onGoogleSignIn } from "../../services/AuthService";
-import LoginCTA from "./LoginCTA";
+import { LoginButton } from "./_components/login-button";
 
-const SignIn = (): React.JSX.Element => {
+const SignInScreen = (): React.JSX.Element => {
 
     return (
         <View style={styles.signInWrapper}>
-            <LoginCTA 
+            <LoginButton 
                 backgroundColorHex={colors.facebookBackgroundColor.backgroundColor} 
                 buttonText="Sign In with Facebook"
                 textColorHex={colors.whiteTextColor.color}
@@ -18,7 +18,7 @@ const SignIn = (): React.JSX.Element => {
                 onPress={onFacebookSignIn} 
             />
 
-            <LoginCTA 
+            <LoginButton 
                 backgroundColorHex={colors.whiteBackgroundColor.backgroundColor} 
                 buttonText="Sign In with Google" 
                 textColorHex={colors.blackTextColor.color}
@@ -30,4 +30,4 @@ const SignIn = (): React.JSX.Element => {
     )
 }
 
-export default SignIn;
+export default SignInScreen;

@@ -2,15 +2,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import RoomsListItem from "./RoomsListItem";
-import { roomStyle } from "../../styles/roomStyle";
-import { RootStackParamList } from "../Main";
+import { ListItem } from "./_components/list-item";
+import { roomStyle } from "../../assets/styles/roomStyle";
+import { RootStackParamList } from "../../components/Main";
 import { useAppDispatch } from "../../redux/store/store";
 import { RoomListType, fetchRoomList, selectRoomList } from "../../redux/reducers/roomListSlice";
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "RoomsList">;
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "ChatRooms">;
 
-const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
+const ChatRoomsScreen = ({ navigation }: NavigationProps): React.JSX.Element => {
     const [rooms, setRooms] = useState<RoomListType[]>([]);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const appDispatch = useAppDispatch();
@@ -30,10 +30,10 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     useEffect(() => setRooms(roomList), [roomList]);
 
     const listOfRooms = rooms.map((roomProps: RoomListType, index) => {
-        return <RoomsListItem
+        return <ListItem
             {...roomProps}
-            handleClick={() => navigation.navigate("Room", { room_id: roomProps.room_id, room_name: roomProps.room_name })}
-            key={roomProps.room_name + index}
+            handleClick={() => navigation.navigate("Chat", { chat_id: roomProps.chat_id, chat_name: roomProps.chat_name })}
+            key={roomProps.chat_name + index}
         />
     });
 
@@ -47,4 +47,4 @@ const RoomsList = ({ navigation }: NavigationProps): React.JSX.Element => {
     )
 }
 
-export default RoomsList;
+export default ChatRoomsScreen;

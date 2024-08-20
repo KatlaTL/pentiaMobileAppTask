@@ -3,7 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { sendMessage } from './RoomService';
 import { UserType } from '../redux/reducers/userSlice';
 
-export const uploadImage = async (room_id: string, user: UserType | null, fromLibrary: boolean): Promise<void> => {
+export const uploadImage = async (chat_id: string, user: UserType | null, fromLibrary: boolean): Promise<void> => {
     try {
         let result;
 
@@ -32,7 +32,7 @@ export const uploadImage = async (room_id: string, user: UserType | null, fromLi
             const url = await storeImageInFirebase(file.fileName, file.uri);
 
             if (url) {
-                await sendMessage(room_id, url, user, "image");
+                await sendMessage(chat_id, url, user, "image");
             }
         }));
 

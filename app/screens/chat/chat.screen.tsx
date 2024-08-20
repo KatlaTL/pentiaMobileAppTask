@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Button, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { roomStyle } from "../../styles/roomStyle";
-import { colors } from "../../styles/colors";
+import { roomStyle } from "../../assets/styles/roomStyle";
+import { colors } from "../../assets/styles/colors";
 import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
-import { RootStackParamList } from "../Main";
+import { RootStackParamList } from "../../components/Main";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { globalStyle } from "../../styles/global";
-import { MemoizedMessage } from "./Message";
+import { globalStyle } from "../../assets/styles/global";
+import { MemoizedMessage } from "./_components/message";
 import { useAppDispatch } from "../../redux/store/store";
 import { createMessageObject, getMoreMessagesAfterLastDocument, getRoomMessagesSnapshot, sendMessage } from "../../services/RoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
@@ -17,18 +17,18 @@ import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../.
 import { uploadImage } from "../../services/ImageService";
 import { dialogueWithTwoOptions } from "../../utils/dialogues";
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "Room">;
+type NavigationProps = NativeStackScreenProps<RootStackParamList, "Chat">;
 
-const Room = ({ route }: NavigationProps): React.JSX.Element => {
-    const { room_id } = route.params;
+const ChatScreen = ({ route }: NavigationProps): React.JSX.Element => {
+    const { chat_id } = route.params;
 
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [chatMessage, setChatMessage] = useState<string>("");
 
     const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);
-    const messagesSelector = useSelector(selectRoomMessages(room_id));
-    const lastDocIDSelector = useSelector(selectRoomLastDocID(room_id));
+    const messagesSelector = useSelector(selectRoomMessages(chat_id));
+    const lastDocIDSelector = useSelector(selectRoomLastDocID(chat_id));
 
     const onImagePicker = async () => {
         dialogueWithTwoOptions({
@@ -36,11 +36,11 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             message: "Upload a photo from the gallery or take a new photo with your camera",
             optionOne: {
                 text: "Go to gallery",
-                onPress: async () => await uploadImage(room_id, user, true)
+                onPress: async () => await uploadImage(chat_id, user, true)
             },
             optionTwo: {
                 text: "Go to camera",
-                onPress: async () => await uploadImage(room_id, user, false)
+                onPress: async () => await uploadImage(chat_id, user, false)
             }
         });
     }
@@ -52,15 +52,15 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
         Keyboard.dismiss();
 
-        sendMessage(room_id, chatMessage, user)
+        sendMessage(chat_id, chatMessage, user)
             .then(async () => {
                 setChatMessage("");
 
                 // Enable notifications if the user gives permission
-                await enableNotificationsForRoomID(room_id, user?.uid || "");
+                await enableNotificationsForRoomID(chat_id, user?.uid || "");
 
                 // Send notification to users who gave permission
-                await sendNotificationOnNewMessage(room_id);
+                await sendNotificationOnNewMessage(chat_id);
             })
             .catch((err) => console.error(err)); // TO-DO handle exceptions
     };
@@ -87,7 +87,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
             }
         });
 
-        appDispatch(setRoomMessages({ room_id, messages: snapshotMessages.reverse(), lastDocID }));
+        appDispatch(setRoomMessages({ chat_id, messages: snapshotMessages.reverse(), lastDocID }));
     };
 
     const fetchMoreMessages = () => {
@@ -97,9 +97,9 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
 
         setIsLoadingMessages(true);
 
-        getMoreMessagesAfterLastDocument(room_id, lastDocIDSelector)
+        getMoreMessagesAfterLastDocument(chat_id, lastDocIDSelector)
             .then(data => {
-                appDispatch(loadMoreRoomMessages({ room_id, messages: data.messages, lastDocID: data.lastDocumenID }));
+                appDispatch(loadMoreRoomMessages({ chat_id, messages: data.messages, lastDocID: data.lastDocumenID }));
             })
             .catch(err => console.error(err)) // TO-DO handle exceptions
             .finally(() => setIsLoadingMessages(false))
@@ -111,7 +111,7 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
         // Set fetchLimit to 3 if it's not the initial load. !important - FetchLimited most be a number above 2
         const fetchLimit = messagesSelector ? 3 : 50;
 
-        const unsubscribe = getRoomMessagesSnapshot({ room_id, fetchLimit, onNextCB: handleMessageSnapshot });
+        const unsubscribe = getRoomMessagesSnapshot({ chat_id, fetchLimit, onNextCB: handleMessageSnapshot });
 
         return () => unsubscribe();
     }, []);
@@ -157,4 +157,4 @@ const Room = ({ route }: NavigationProps): React.JSX.Element => {
     )
 }
 
-export default Room;
+export default ChatScreen;

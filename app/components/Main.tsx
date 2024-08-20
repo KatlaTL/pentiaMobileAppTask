@@ -1,21 +1,21 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import SignIn from "./signin/SignIn";
+import SignInScreen from "../screens/signin/signin.screen";
 import useAuthStatus from "../hooks/useAuthStatus";
-import { globalStyle } from "../styles/global";
-import { colors } from "../styles/colors";
-import RoomsList from "./rooms/RoomsList";
-import Room from "./rooms/Room";
+import { globalStyle } from "../assets/styles/global";
+import { colors } from "../assets/styles/colors";
+import ChatRoomsScreen from "../screens/chat-rooms/chat-rooms.screen";
+import ChatScreen from "../screens/chat/chat.screen";
 import { signOut } from "../services/AuthService";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
-import SplashScreen from "./Splash";
+import SplashScreen from "../screens/splash/Splash";
 
 export type RootStackParamList = {
     SignIn: undefined,
-    RoomsList: undefined,
-    Room: { room_id: string, room_name: string },
+    ChatRooms: undefined,
+    Chat: { chat_id: string, chat_name: string },
     Root: undefined,
     Splash: undefined
 }
@@ -47,7 +47,7 @@ const Root = (): React.JSX.Element => {
                 )
             }}
         >
-            <Stack.Screen name="RoomsList" component={RoomsList} options={{ title: "Chat Rooms" }} />
+            <Stack.Screen name="ChatRooms" component={ChatRoomsScreen} options={{ title: "Chat Rooms" }} />
         </Drawer.Navigator>
     )
 }
@@ -75,11 +75,11 @@ const Main = (): React.JSX.Element => {
                     user ? (
                         <>
                             <Stack.Screen name="Root" component={Root} options={{ headerShown: false }} />
-                            <Stack.Screen name="Room" component={Room} options={({ route }) => ({ title: route.params.room_name })} />
+                            <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ title: route.params.chat_name })} />
                         </>
                     ) : (
                         <>
-                            <Stack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
+                            <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: "Sign In" }} />
                         </>
                     )
                 )}

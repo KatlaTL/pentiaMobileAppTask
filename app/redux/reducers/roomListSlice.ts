@@ -3,8 +3,8 @@ import { RootState } from "../store/store";
 import { getAllRooms } from "../../services/RoomService";
 
 export type RoomListType = {
-    room_id: string,
-    room_name: string,
+    chat_id: string,
+    chat_name: string,
     description: string,
     total_messages: number,
     last_message: string,

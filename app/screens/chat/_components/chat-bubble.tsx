@@ -7,12 +7,10 @@ type chatBubbleType = {
     text: string
 }
 
-const ChatBubble = ({ bubbleStyle, textStyle, text }: chatBubbleType): React.JSX.Element => {
+export const ChatBubble = ({ bubbleStyle, textStyle, text }: chatBubbleType): React.JSX.Element => {
     return (
         <View style={bubbleStyle}>
             <Text style={textStyle}>{text}</Text>
         </View>
     )
 }
-
-export default ChatBubble;

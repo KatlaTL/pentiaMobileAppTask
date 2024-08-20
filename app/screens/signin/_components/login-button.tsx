@@ -1,10 +1,10 @@
 import React from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { signInStyle as styles } from "../../styles/signInStyle";
-import { globalStyle } from "../../styles/global";
+import { signInStyle as styles } from "../../../assets/styles/signInStyle";
+import { globalStyle } from "../../../assets/styles/global";
 import { Text, TouchableOpacity, View } from "react-native";
 
-type LoginCTAType = {
+type LoginButtonType = {
     onPress: () => void,
     backgroundColorHex: string,
     iconColorHex: string,
@@ -13,7 +13,7 @@ type LoginCTAType = {
     textColorHex: string
 }
 
-const LoginCTA = ({ onPress, backgroundColorHex, iconColorHex, iconName, buttonText, textColorHex }: LoginCTAType): React.JSX.Element => {
+export const LoginButton = ({ onPress, backgroundColorHex, iconColorHex, iconName, buttonText, textColorHex }: LoginButtonType): React.JSX.Element => {
     return (
         <TouchableOpacity style={[styles.button, { backgroundColor: backgroundColorHex }]} onPress={async () => await onPress()}>
             <Icon name={iconName} size={30} style={[globalStyle.flex1, { marginLeft: 15 }]} color={iconColorHex} />
@@ -21,5 +21,3 @@ const LoginCTA = ({ onPress, backgroundColorHex, iconColorHex, iconName, buttonT
         </TouchableOpacity>
     )
 }
-
-export default LoginCTA;

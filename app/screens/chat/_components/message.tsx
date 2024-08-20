@@ -1,18 +1,18 @@
 import { memo } from "react";
-import { colors } from "../../styles/colors";
-import { roomStyle } from "../../styles/roomStyle";
+import { colors } from "../../../assets/styles/colors";
+import { roomStyle } from "../../../assets/styles/roomStyle";
 import { Image, Text, View } from "react-native";
-import { UserType } from "../../redux/reducers/userSlice";
-import { MessageType } from "../../redux/reducers/messageSlice";
-import { isSameDate } from "../../utils/helpers";
-import ChatBubble from "./ChatBubble";
+import { UserType } from "../../../redux/reducers/userSlice";
+import { MessageType } from "../../../redux/reducers/messageSlice";
+import { isSameDate } from "../../../utils/helpers";
+import { ChatBubble } from "./chat-bubble";
 
-type Message = {
+type MessageUserType = {
     item: MessageType,
     user: UserType | null
 }
 
-const Message = ({ item, user }: Message): React.JSX.Element => {
+export const Message = ({ item, user }: MessageUserType): React.JSX.Element => {
     const isSelf = item.uid === user?.uid;
 
     const today: Date = new Date();
@@ -80,5 +80,3 @@ export const MemoizedMessage = memo(Message, (prevProps, nextProps) => {
     return prevProps.item === nextProps.item
         && prevProps.user === nextProps.user;
 });
-
-export default Message;

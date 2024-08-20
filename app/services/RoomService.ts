@@ -10,11 +10,11 @@ export const getAllRooms = async (): Promise<RoomListType[]> => {
         rooms.forEach(value => {
             const data = value.data() as RoomListType;
             newRooms.push({
-                room_name: data.room_name,
+                chat_name: data.chat_name,
                 description: data.description,
                 last_message: data.last_message,
                 total_messages: data.total_messages,
-                room_id: value.id,
+                chat_id: value.id,
                 date_last_message: value.data().date_last_message.toDate().toString(),
             } as RoomListType)
         })
@@ -39,17 +39,17 @@ export const getRoomSubCollectionDocByID = (roomID: string, docID: string): Prom
 };
 
 type fetchMessagesSnapshotOptions = {
-    room_id: string,
+    chat_id: string,
     fetchLimit?: number,
     startAfterDocID?: string,
     onNextCB: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
     onErrorCB?: (error: Error) => void
 };
 
-export const getRoomMessagesSnapshot = ({ room_id, fetchLimit = 50, onNextCB, onErrorCB }: fetchMessagesSnapshotOptions): () => void => {
+export const getRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: fetchMessagesSnapshotOptions): () => void => {
     return firestore()
         .collection("rooms")
-        .doc(room_id)
+        .doc(chat_id)
         .collection("messages")
         .orderBy("date_created", "desc")
         .limit(fetchLimit)
@@ -68,13 +68,13 @@ type fetchNextMessages = {
     lastDocumenID: string
 };
 
-export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
+export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocumenID: string, limit: number = 20): Promise<fetchNextMessages> => {
     try {
-        const lastDoc = await getRoomSubCollectionDocByID(room_id, lastDocumenID);
+        const lastDoc = await getRoomSubCollectionDocByID(chat_id, lastDocumenID);
 
         return firestore()
             .collection("rooms")
-            .doc(room_id)
+            .doc(chat_id)
             .collection("messages")
             .orderBy("date_created", "desc")
             .startAfter(lastDoc)
@@ -98,10 +98,10 @@ export const getMoreMessagesAfterLastDocument = async (room_id: string, lastDocu
     }
 };
 
-export const sendMessage = (room_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
+export const sendMessage = (chat_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
     try {
 
-        const roomReference = firestore().collection("rooms").doc(room_id);
+        const roomReference = firestore().collection("rooms").doc(chat_id);
 
         return firestore().runTransaction(async transaction => {
             const roomSnapshot = await transaction.get(roomReference);
