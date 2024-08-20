@@ -1,20 +1,21 @@
-import { useEffect, } from 'react';
+import { useEffect, useState, } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../redux/store/store';
 import { UserType, login, logout, selectUser } from '../redux/reducers/userSlice';
-import { setInitializing, selectInitializing } from '../redux/reducers/appSlice';
 import { onStateChange } from '../services/AuthService';
 import { getFCMDeviceToken } from '../services/NotificationService';
 
-type AuthStatus = {
-    user: UserType | null,
-    initializing: boolean
+type AuthStateType = {
+    user: UserType | null;
+    isLoaded: boolean;
 }
 
-const useAuthStatus = (): AuthStatus => {
+const isLoadedInitialState: boolean = false;
+
+const useAuth = (): AuthStateType => {
     const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);
-    const initializing = useSelector(selectInitializing)
+    const [isLoaded, setIsLoaded] = useState<boolean>(isLoadedInitialState);
 
     useEffect(() => {
         const unsubscribe = onStateChange(async (userState) => {
@@ -31,13 +32,14 @@ const useAuthStatus = (): AuthStatus => {
                 appDispatch(logout());
             }
 
-            appDispatch(setInitializing(false));
+            setIsLoaded(true);
         })
 
         return unsubscribe;
     }, [])
 
-    return { user, initializing };
+
+    return { user, isLoaded };
 }
 
-export default useAuthStatus;
+export default useAuth;

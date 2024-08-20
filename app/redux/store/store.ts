@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../reducers/userSlice';
-import appReducer from '../reducers/appSlice'
 import { useDispatch } from 'react-redux';
 import roomListSlice from '../reducers/chatRoomListSlice';
 import messageSlice from '../reducers/messageSlice';
@@ -8,7 +7,6 @@ import messageSlice from '../reducers/messageSlice';
 const store = configureStore({
     reducer: {
         user: userReducer.reducer,
-        app: appReducer.reducer,
         chatRoomList: roomListSlice.reducer,
         messages: messageSlice.reducer
     }

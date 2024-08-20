@@ -1,9 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native"
-import useAuthStatus from "../hooks/useAuthStatus";
+import useAuth from "../hooks/useAuth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppNavigator } from "./app.navigator";
 import SplashScreen from "../screens/splash/splash.screen";
 import { AuthNavigator } from "./auth.navigator";
+import { useLoadingContext } from "../contexts/loading.context";
 
 type RootStackParamList = {
     Splash: undefined;
@@ -14,11 +15,12 @@ type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootNavigator = () => {
-    const { user, initializing } = useAuthStatus();
+    const { user } = useAuth();
+    const { isLoaded } = useLoadingContext();
 
     return (
         <NavigationContainer>
-            {initializing ? (
+            {!isLoaded ? (
                 <Stack.Navigator>
                     <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
                 </Stack.Navigator>
