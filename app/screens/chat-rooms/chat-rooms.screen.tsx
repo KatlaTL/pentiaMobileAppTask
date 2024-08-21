@@ -4,15 +4,15 @@ import { useSelector } from "react-redux";
 import { ListItem } from "./_components/list-item";
 import { roomStyle } from "../../assets/styles/roomStyle";
 import { useAppDispatch } from "../../redux/store/store";
-import { ChatRoomListType, fetchChatRoomList, selectRoomList } from "../../redux/reducers/chatRoomListSlice";
+import { ChatRoomListType, fetchChatRoomList, selectChatRoomList } from "../../redux/reducers/chatRoomListSlice";
 import { ChatRoomsNavigationProps } from "../../navigators/app.navigator";
 
 
 const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.Element => {
-    const [rooms, setRooms] = useState<ChatRoomListType[]>([]);
+    const [chatRooms, setChatRooms] = useState<ChatRoomListType[]>([]);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const appDispatch = useAppDispatch();
-    const roomList = useSelector(selectRoomList);
+    const chatRoomList = useSelector(selectChatRoomList);
 
     const getRoomList = useCallback(() => {
         setRefreshing(true);
@@ -21,13 +21,11 @@ const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.El
             .finally(() => setRefreshing(false));
     }, []);
 
-    useEffect(() => {
-        getRoomList();
-    }, []);
+    useEffect(() => getRoomList(), []);
 
-    useEffect(() => setRooms(roomList), [roomList]);
+    useEffect(() => setChatRooms(chatRoomList), [chatRoomList]);
 
-    const listOfRooms = rooms.map((roomProps: ChatRoomListType, index) => {
+    const listOfRooms = chatRooms.map((roomProps: ChatRoomListType, index) => {
         return <ListItem
             {...roomProps}
             handleClick={() => navigation.navigate("Chat", { chat_id: roomProps.chat_id, chat_name: roomProps.chat_name })}

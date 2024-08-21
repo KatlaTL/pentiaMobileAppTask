@@ -42,6 +42,6 @@ export const fetchChatRoomList = createAsyncThunk("chatRoomList/fetchChatRoomLis
 
 export const { setChatRoomList } = roomListSlice.actions;
 
-export const selectRoomList = (state: RootState) => state.chatRoomList.chatRoomsList;
+export const selectChatRoomList = (state: RootState) => state.chatRoomList.chatRoomsList;
 
 export default roomListSlice;
