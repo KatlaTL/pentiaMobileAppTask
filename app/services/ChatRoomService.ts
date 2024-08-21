@@ -46,6 +46,7 @@ type FetchMessagesSnapshotOptionsType = {
     onErrorCB?: (error: Error) => void
 };
 
+//!important - FetchLimit most be a number above 2 - TODO add error handling for it
 export const getChatRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: FetchMessagesSnapshotOptionsType): () => void => {
     return firestore()
         .collection("rooms")
