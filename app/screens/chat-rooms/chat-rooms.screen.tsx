@@ -6,6 +6,7 @@ import { roomStyle } from "../../assets/styles/roomStyle";
 import { useAppDispatch } from "../../redux/store/store";
 import { ChatRoomListType, fetchChatRoomList, selectChatRoomList } from "../../redux/reducers/chatRoomListSlice";
 import { ChatRoomsNavigationProps } from "../../navigators/app.navigator";
+import { ChatRoonsPresentation } from "./_components/chat-rooms-presentation";
 
 
 const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.Element => {
@@ -25,22 +26,14 @@ const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.El
 
     useEffect(() => setChatRooms(chatRoomList), [chatRoomList]);
 
-    const listOfRooms = chatRooms.map((roomProps: ChatRoomListType, index) => {
-        return <ListItem
-            {...roomProps}
-            handleClick={() => navigation.navigate("Chat", { chat_id: roomProps.chat_id, chat_name: roomProps.chat_name })}
-            key={roomProps.chat_name + index}
-        />
-    });
+    const handleRoomClick = (chat_id: string, chat_name: string) => navigation.navigate("Chat", { chat_id: chat_id, chat_name: chat_name });
 
-    return (
-        <ScrollView
-            contentContainerStyle={roomStyle.roomList}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getRoomList} />}
-        >
-            {listOfRooms}
-        </ScrollView>
-    )
+    return <ChatRoonsPresentation
+        chatRooms={chatRooms}
+        getRoomList={getRoomList}
+        handleRoomClick={handleRoomClick}
+        refreshing={refreshing}
+    />
 }
 
 export default ChatRoomsScreen;
