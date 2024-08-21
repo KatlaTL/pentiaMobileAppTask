@@ -1,12 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Keyboard } from "react-native";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { roomStyle } from "../../assets/styles/roomStyle";
-import { colors } from "../../assets/styles/colors";
 import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
-import { globalStyle } from "../../assets/styles/global";
-import { MemoizedMessage } from "./_components/message";
 import { useAppDispatch } from "../../redux/store/store";
 import { createMessageObject, getMoreMessagesAfterLastDocument, getChatRoomMessagesSnapshot, sendMessage } from "../../services/ChatRoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
@@ -15,6 +11,7 @@ import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../.
 import { uploadImage } from "../../services/ImageService";
 import { dialogueWithTwoOptions } from "../../utils/dialogues";
 import { ChatNavigationProps } from "../../navigators/app.navigator";
+import { ChatPresentation } from "./_components/chat-presentation";
 
 
 const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
@@ -43,7 +40,7 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         });
     }
 
-    const handleClick = async () => {
+    const handleSendMessage = async () => {
         if (chatMessage.length === 0) {
             return
         }
@@ -114,45 +111,17 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         return () => unsubscribe();
     }, []);
 
-    const renderItem = useCallback(({ item }: { item: MessageType }) => (
-        <MemoizedMessage item={item} user={user} />
-    ), []);
+    return <ChatPresentation
+        fetchMoreMessages={debounceFetchMoreMessages}
+        handleSendMessage={handleSendMessage}
+        isLoadingMessages={isLoadingMessages}
+        messages={messagesSelector}
+        onImagePicker={onImagePicker}
+        chatMessage={chatMessage}
+        setChatMessage={setChatMessage}
+        user={user}
+    />
 
-    return (
-        <>
-            {isLoadingMessages && (
-                <View style={[globalStyle.activityIndicator, { marginTop: 30 }]}>
-                    <ActivityIndicator size={50} color="#0000ff" />
-                </View>
-            )}
-            <FlatList
-                contentContainerStyle={roomStyle.chatFlatList}
-                overScrollMode="never"
-                data={messagesSelector}
-                renderItem={renderItem}
-                keyExtractor={(item: MessageType) => item.message_id}
-                inverted
-                onEndReachedThreshold={0.8}
-                onEndReached={debounceFetchMoreMessages}
-            />
-            <View style={roomStyle.chatInputWrapper}>
-                <TouchableOpacity style={[roomStyle.uploadPhoto, colors.purpleBackgroundColor]} onPress={onImagePicker}>
-                    <Text style={[roomStyle.uploadPhotoText, colors.whiteTextColor]}>Upload Photo</Text>
-                </TouchableOpacity>
-                <TextInput
-                    style={roomStyle.chatInputField}
-                    placeholder="Aa"
-                    placeholderTextColor={"gray"}
-                    onChangeText={text => setChatMessage(text)}
-                    defaultValue={chatMessage}
-                    onSubmitEditing={handleClick}
-                />
-                <TouchableOpacity style={[roomStyle.chatButton, colors.blueBackgroundColor]} onPress={handleClick} disabled={chatMessage.length === 0}>
-                    <Text style={[roomStyle.chatButtonText, colors.whiteTextColor]}>Send</Text>
-                </TouchableOpacity>
-            </View>
-        </>
-    )
 }
 
 export default ChatScreen;
