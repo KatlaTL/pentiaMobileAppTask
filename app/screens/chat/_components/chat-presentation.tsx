@@ -19,6 +19,9 @@ type ChatPresentationType = {
     handleSendMessage: () => Promise<void>;
 }
 
+/**
+ * Chat Screen Presentation 
+ */
 export const ChatPresentation = ({ user, isLoadingMessages, messages, fetchMoreMessages, onImagePicker, chatMessage, setChatMessage, handleSendMessage }: ChatPresentationType): React.JSX.Element => {
 
     const renderItem = useCallback(({ item }: { item: MessageType }) => (

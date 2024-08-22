@@ -3,6 +3,9 @@ import messaging from '@react-native-firebase/messaging';
 import { getAllFCMTokensByUserIDs, getUserByID, updateUserByID } from './AuthService';
 import { addUserToChatRoomSubscriberList, getChatRoomSubscriberList } from './ChatRoomService';
 
+/**
+ * If the user accepts notifications, then get FCM Token and save it on the user in Firestore and add the user to the chat rooms notification subscriber list
+ */
 export const enableNotificationsForRoomID = async (roomID: string, userID: string): Promise<void> => {
     try {
         // Check for notification permissions
@@ -46,6 +49,9 @@ export const enableNotificationsForRoomID = async (roomID: string, userID: strin
     }
 }
 
+/**
+ * Ask the user for permission to send notifications.
+ */
 export const getNotificationPermission = async (): Promise<boolean> => {
     const settings = await notifee.requestPermission();
 
@@ -59,6 +65,10 @@ export const getNotificationPermission = async (): Promise<boolean> => {
     return false;
 }
 
+/**
+ * Get the FCM device token
+ * @returns FCM Token
+ */
 export const getFCMDeviceToken = async (): Promise<string> => {
     try {
         if (!messaging().isDeviceRegisteredForRemoteMessages) {
@@ -72,6 +82,9 @@ export const getFCMDeviceToken = async (): Promise<string> => {
     }
 }
 
+/**
+ * Send notifications to all notification subscribers for the chat room
+ */
 export const sendNotificationOnNewMessage = async (roomID: string) => {
     try {
         // Get list of users that are to receive notifications

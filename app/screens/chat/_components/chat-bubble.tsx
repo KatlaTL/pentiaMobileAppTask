@@ -7,6 +7,9 @@ type chatBubbleType = {
     text: string
 }
 
+/**
+ * Renders a Chat Bubble 
+ */
 export const ChatBubble = ({ bubbleStyle, textStyle, text }: chatBubbleType): React.JSX.Element => {
     return (
         <View style={bubbleStyle}>

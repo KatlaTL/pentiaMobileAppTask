@@ -10,6 +10,9 @@ type ChatRoomPresentationType = {
     getRoomList: () => void;
 }
 
+/**
+ * Chat Rooms Presentations 
+ */
 export const ChatRoonsPresentation = ({ chatRooms, handleRoomClick, refreshing, getRoomList }: ChatRoomPresentationType): React.JSX.Element => {
 
     const listOfRooms = chatRooms.map((roomProps: ChatRoomListType, index) => {

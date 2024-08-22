@@ -12,6 +12,11 @@ type AuthStateType = {
 
 const isLoadedInitialState: boolean = false;
 
+/**
+ * Auth hook.
+ * Listens on Firebase auth state change and updates the user object accordingly 
+ * @returns {Object} { user: UserType | null, isLoaded: boolean }
+ */
 const useAuth = (): AuthStateType => {
     const appDispatch = useAppDispatch();
     const user = useSelector(selectUser);

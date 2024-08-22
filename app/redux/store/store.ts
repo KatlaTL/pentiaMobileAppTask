@@ -4,6 +4,9 @@ import { useDispatch } from 'react-redux';
 import roomListSlice from '../reducers/chatRoomListSlice';
 import messageSlice from '../reducers/messageSlice';
 
+/**
+ * Setup the Redux Store
+ */
 const store = configureStore({
     reducer: {
         user: userReducer.reducer,

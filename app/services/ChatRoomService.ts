@@ -3,6 +3,10 @@ import { ChatRoomListType } from '../redux/reducers/chatRoomListSlice';
 import { MessageType } from '../redux/reducers/messageSlice';
 import { UserType } from '../redux/reducers/userSlice';
 
+/**
+ * Get all chat rooms saved in Firestore
+ * @returns List of chat rooms
+ */
 export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
     try {
         const rooms = await firestore().collection("rooms").orderBy("date_last_message", "desc").get();
@@ -25,6 +29,12 @@ export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
     }
 };
 
+/**
+ * Get a message subcollection of a chat room saved in Firestore 
+ * @param roomID 
+ * @param docID 
+ * @returns document snapshot
+ */
 export const getChatRoomSubCollectionDocByID = (roomID: string, docID: string): Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> => {
     return firestore()
         .collection("rooms")
@@ -46,7 +56,10 @@ type FetchMessagesSnapshotOptionsType = {
     onErrorCB?: (error: Error) => void
 };
 
-//!important - FetchLimit most be a number above 2 - TODO add error handling for it
+/**
+ * Listening on the chat room messages Firestore snapshot
+ * @param fetchLimit important! - fetchLimit most be a number above 2 - TODO add error handling for it
+ */
 export const getChatRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: FetchMessagesSnapshotOptionsType): () => void => {
     return firestore()
         .collection("rooms")
@@ -69,6 +82,13 @@ type FetchNextMessagesType = {
     lastDocumenID: string
 };
 
+/**
+ * Get an amount of messages based on the limited param, starting after the last document
+ * @param chat_id 
+ * @param lastDocumenID - ID of the last document previous fetched
+ * @param limit - Amount of messages that should be fetched. Default is 20.
+ * @returns List of messages and the lastDocumentID
+ */
 export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocumenID: string, limit: number = 20): Promise<FetchNextMessagesType> => {
     try {
         const lastDoc = await getChatRoomSubCollectionDocByID(chat_id, lastDocumenID);
@@ -99,6 +119,9 @@ export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocu
     }
 };
 
+/**
+ * Runs a transaction to save a new message in Firestore for the given chat ID 
+ */
 export const sendMessage = (chat_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
     try {
 
@@ -133,6 +156,9 @@ export const sendMessage = (chat_id: string, content: string, user: UserType | n
     }
 };
 
+/**
+ * Construct a message object
+ */
 export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, messageID: string): MessageType => {
     return {
         ...data,
@@ -141,6 +167,9 @@ export const createMessageObject = (data: FirebaseFirestoreTypes.DocumentData, m
     } as MessageType;
 };
 
+/**
+ * Add a user to the notification subscriber list of a chat room
+ */
 export const addUserToChatRoomSubscriberList = async (roomID: string, userID: string): Promise<void | { error: any }> => {
     try {
         await firestore().collection("rooms").doc(roomID).update({
@@ -158,6 +187,9 @@ type ChatRoomSubscriberListReturnType = {
     error: any | null
 };
 
+/**
+ *  Get the list of all subscribers for a chat room
+ */
 export const getChatRoomSubscriberList = async (roomID: string): Promise<ChatRoomSubscriberListReturnType> => {
     return await firestore()
         .collection("rooms")

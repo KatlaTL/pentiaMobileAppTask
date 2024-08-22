@@ -3,6 +3,12 @@ import storage from '@react-native-firebase/storage';
 import { sendMessage } from './ChatRoomService';
 import { UserType } from '../redux/reducers/userSlice';
 
+/**
+ * Saves an image in Firebase storage and then the URL in Firestore
+ * @param chat_id 
+ * @param user 
+ * @param fromLibrary - Boolean that decides if the image should be uploaded from the image library or a new image should be taken with the camera
+ */
 export const uploadImage = async (chat_id: string, user: UserType | null, fromLibrary: boolean): Promise<void> => {
     try {
         let result;
@@ -41,6 +47,12 @@ export const uploadImage = async (chat_id: string, user: UserType | null, fromLi
     }
 }
 
+/**
+ * Save a file in Firebase storage
+ * @param fileName 
+ * @param filePath 
+ * @returns - URL to firebase storage
+ */
 const storeImageInFirebase = async (fileName: string, filePath: string): Promise<string> => {
     try {
         const reference = storage().ref(fileName);

@@ -8,6 +8,9 @@ type ChatButtonType = {
     buttonText: string;
 }
 
+/**
+ * Renders a simple button 
+ */
 export const ChatButton = ({ style, textStyle, onPress, disabled = false, buttonText }: ChatButtonType) => {
     return (
         <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>

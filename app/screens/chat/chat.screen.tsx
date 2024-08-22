@@ -13,7 +13,9 @@ import { dialogueWithTwoOptions } from "../../utils/dialogues";
 import { ChatNavigationProps } from "../../navigators/app.navigator";
 import { ChatPresentation } from "./_components/chat-presentation";
 
-
+/**
+ * Displays Chat Screen
+ */
 const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
     const { chat_id } = route.params;
 
@@ -25,6 +27,10 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
     const messagesSelector = useSelector(selectRoomMessages(chat_id));
     const lastDocIDSelector = useSelector(selectRoomLastDocID(chat_id));
 
+    /**
+     * Uploads images to the chat.
+     * Asks the user if they want to upload from photo gallery or use the camera to take a new picture.
+     */
     const onImagePicker = async () => {
         dialogueWithTwoOptions({
             title: "Upload Photo",
@@ -40,6 +46,11 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         });
     }
 
+    /**
+     * Sends a new message to the chat room.
+     * Ask the user for permission to receive notifications for the specific chat room.
+     * Sends notifications to all users who gave permissions.
+     */
     const handleSendMessage = async () => {
         if (chatMessage.length === 0) {
             return
@@ -60,6 +71,11 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
             .catch((err) => console.error(err)); // TO-DO handle exceptions
     };
 
+    /**
+     * Handles Firestore message snapshot.
+     * Used as onSnapshot onNext CB.
+     * Saves new mesages to the Room Messages list in the Redux Store reducer: messageSlice.ts.
+     */
     const handleMessageSnapshot = async (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
         const docChanges = snapshot.docChanges();
 
@@ -85,6 +101,10 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         appDispatch(setRoomMessages({ chat_id, messages: snapshotMessages.reverse(), lastDocID }));
     };
 
+    /**
+     * Loads more messages and saves them in the Redux Store reducer: messageSlice.ts.
+     * Used with onEndReached on flatlist showing all the messages.
+     */
     const fetchMoreMessages = () => {
         if ((lastDocIDSelector === "" || lastDocIDSelector === undefined) || isLoadingMessages) {
             return;
@@ -100,8 +120,14 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
             .finally(() => setIsLoadingMessages(false))
     };
 
+    /**
+     * Wrap the fetchMoreMessages in a debounce function to prevent overloading the Firestore API with unnecessary calls
+     */
     const debounceFetchMoreMessages = debounce(() => fetchMoreMessages());
 
+    /**
+     * Start listening on the chat room messages Firestore snapshot
+     */
     useEffect(() => {
         // Set fetchLimit to 3 if it's not the initial load. !important - FetchLimited most be a number above 2
         const fetchLimit = messagesSelector ? 3 : 50;

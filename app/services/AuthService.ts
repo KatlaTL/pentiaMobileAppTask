@@ -12,8 +12,15 @@ type SignInErrorType = {
     error: FirebaseAuthTypes.NativeFirebaseAuthError | null,
 }
 
+/**
+ * Listens to changes in the users auth state 
+ */
 export const onStateChange = (cb: FirebaseAuthTypes.AuthListenerCallback) => auth().onAuthStateChanged(cb);
 
+/**
+ * Sign in with Google.
+ * Use the Google provider to sign in the user and then save credentials in Firebase auth.
+ */
 export const onGoogleSignIn = async (): Promise<SignInErrorType> => {
     try {
         const clientID = googleService.client[0].oauth_client.filter(obj => obj.client_type === 3)[0].client_id;
@@ -55,6 +62,10 @@ export const onGoogleSignIn = async (): Promise<SignInErrorType> => {
     }
 }
 
+/**
+ * Sign in with Facebook.
+ * Use the Facebook provider to sign in the user and then save credentials in Firebase auth.
+ */
 export const onFacebookSignIn = async (): Promise<SignInErrorType> => {
     try {
         // Attempt login with permissions
@@ -103,6 +114,10 @@ export const onFacebookSignIn = async (): Promise<SignInErrorType> => {
     }
 }
 
+/**
+ * Signs the user into firebase auth with credentials
+ * @param credential - a generated auth credential. For example from social auth (Google/Facebook)
+ */
 const signInUserWithCredential = async (credential: FirebaseAuthTypes.AuthCredential): Promise<null | FirebaseAuthTypes.NativeFirebaseAuthError> => {
     // Sign-in the user with the credential
     return auth().signInWithCredential(credential)
@@ -128,6 +143,11 @@ const signInUserWithCredential = async (credential: FirebaseAuthTypes.AuthCreden
         .catch(err => err);
 }
 
+/**
+ * Link an account to an another provider
+ * @param email 
+ * @param credentialToLink - a generated auth credential. For example from social auth (Google/Facebook)
+ */
 const linkAccountWithDifferentProviders = async (email: string, credentialToLink: FirebaseAuthTypes.AuthCredential) => {
     try {
         // Get the account current login providers
@@ -155,6 +175,9 @@ const linkAccountWithDifferentProviders = async (email: string, credentialToLink
     }
 }
 
+/**
+ * Sign out the user
+ */
 export const signOut = (): void => {
     auth().signOut()
         .then(() => console.log("User has been logged out"))
@@ -166,6 +189,11 @@ type UserReturnType = {
     error: any | null
 }
 
+/**
+ * Get a user saved in Firestore
+ * @param userID 
+ * @returns Object with UserType and error object
+ */
 export const getUserByID = async (userID: string): Promise<UserReturnType> => {
     return await firestore()
         .collection("users")
@@ -188,6 +216,11 @@ export const getUserByID = async (userID: string): Promise<UserReturnType> => {
         });
 }
 
+/**
+ * Update a user in Firestore
+ * @param userID 
+ * @param data - An object containing the fields and values with which to update the document
+ */
 export const updateUserByID = async (userID: string, data): Promise<void | { error: any }> => {
     try {
         await firestore().collection("users").doc(userID).update(data);
@@ -198,6 +231,11 @@ export const updateUserByID = async (userID: string, data): Promise<void | { err
     }
 }
 
+/**
+ * Find all FCM Tokens of users in the list of userIDs
+ * @param userIDs - list of userIDs
+ * @returns {Promise} list of FCM tokens
+ */
 export const getAllFCMTokensByUserIDs = async (userIDs: string[]): Promise<string[]> => {
     try {
         const tokenArray: string[] = [];

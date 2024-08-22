@@ -13,6 +13,9 @@ type LoginButtonType = {
     textColorHex: string
 }
 
+/**
+ * Renders a Button to sign in with different providers
+ */
 export const LoginButton = ({ onPress, backgroundColorHex, iconColorHex, iconName, buttonText, textColorHex }: LoginButtonType): React.JSX.Element => {
     return (
         <TouchableOpacity style={[styles.button, { backgroundColor: backgroundColorHex }]} onPress={async () => await onPress()}>

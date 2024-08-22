@@ -14,6 +14,9 @@ type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+/**
+ * Root Navigation
+ */
 export const RootNavigator = () => {
     const { user } = useAuth();
     const { isLoaded } = useLoadingContext();

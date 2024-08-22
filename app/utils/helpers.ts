@@ -1,5 +1,12 @@
 import { MessageType } from "../redux/reducers/messageSlice";
 
+/**
+ * Debounce wrapper functions.
+ * Used to prevent multiple function calls in quick succesion of for example an API call
+ * @param func - Function to be wrapped
+ * @param wait - Time to wait before allowing the next function call in milliseconds
+ * @returns 
+ */
 export const debounce = <T extends (...agrs: any[]) => any>(func: T, wait: number = 250): (...args: Parameters<T>) => void => {
     let timeoutId;
 
@@ -16,7 +23,10 @@ export type MessageTypeGrouppedByDate = {
     data: MessageType[]
 }
 
-// TO-DO - using this method change message flatlist to sectionlist
+/**
+ * Group list of messages by date and time. Like Facebook messenger 
+ * TO-DO - use this method to change message flatlist to sectionlist
+ */
 export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByDate[] => {
     return messageArray.reduce((accumulator, currentValue: MessageType) => {
         //const lastKey: string = Object.keys(accumulator)[Object.keys(accumulator).length - 1];
@@ -38,6 +48,9 @@ export const groupByDate = (messageArray: MessageType[]): MessageTypeGrouppedByD
     }, [{ title: messageArray[0].date_created, data: new Array<MessageType>() }]);
 }
 
+/**
+ *  Check if two dates are the same 
+ */
 export const isSameDate = (date1: Date, date2: Date): boolean => {
     return date1.getFullYear() === date2.getFullYear()
         && date1.getMonth() === date2.getMonth()

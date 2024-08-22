@@ -22,6 +22,9 @@ export type ChatRoomsNavigationProps = NativeStackScreenProps<AppStackParamList,
 export type ChatNavigationProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 
+/**
+ * App Drawer on ChatRooms screen
+ */
 const AppDrawer = () => {
     return (
         <Drawer.Navigator
@@ -48,7 +51,9 @@ const AppDrawer = () => {
     )
 }
 
-
+/**
+ * App Navigation when signed in
+ */
 export const AppNavigator = () => {
     return (
         <Stack.Navigator

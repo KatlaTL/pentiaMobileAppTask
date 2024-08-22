@@ -10,6 +10,9 @@ interface ListType extends ChatRoomListType {
     handleClick: () => void
 }
 
+/**
+ * Displays a chat room list item
+ */
 export const ListItem = (props: ListType): React.JSX.Element => {
     return (
         <View style={roomStyle.room}>

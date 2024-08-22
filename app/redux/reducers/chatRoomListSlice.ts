@@ -27,6 +27,7 @@ const roomListSlice = createSlice({
             state.chatRoomsList = [...action.payload.chatRoomsList];
         }
     },
+    //Handles the fetchChatRoomList promise and saves the payload to state on success
     extraReducers: (builder) => {
         builder
             .addCase(fetchChatRoomList.fulfilled, (state, action) => {
@@ -38,10 +39,21 @@ const roomListSlice = createSlice({
     }
 })
 
+/**
+ * Load all the chat rooms from Firestore async
+ * @returns {Promise}
+ */
 export const fetchChatRoomList = createAsyncThunk("chatRoomList/fetchChatRoomList", async () => (await getAllChatRooms()) as ChatRoomListType[]);
 
+/**
+ * chatRoomList actions.
+ * setChatRoomList replaces the chat rooms list with a new list.
+ */
 export const { setChatRoomList } = roomListSlice.actions;
 
+/**
+ * @returns Returns the list of all chat rooms
+ */
 export const selectChatRoomList = (state: RootState) => state.chatRoomList.chatRoomsList;
 
 export default roomListSlice;

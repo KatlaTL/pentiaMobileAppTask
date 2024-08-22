@@ -8,6 +8,9 @@ type AuthStackParamList = {
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
+/**
+ * Authentication Navigation when signed out
+ */
 export const AuthNavigator = () => {
     return (
         <Stack.Navigator

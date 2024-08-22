@@ -5,6 +5,9 @@ import { colors } from "../../assets/styles/colors";
 import { onFacebookSignIn, onGoogleSignIn } from "../../services/AuthService";
 import { LoginButton } from "./_components/login-button";
 
+/**
+ * Displays Sign In Screen
+ */
 const SignInScreen = (): React.JSX.Element => {
 
     return (

@@ -12,6 +12,9 @@ type MessageUserType = {
     user: UserType | null
 }
 
+/**
+ * Displays a chat message 
+ */
 export const Message = ({ item, user }: MessageUserType): React.JSX.Element => {
     const isSelf = item.uid === user?.uid;
 
@@ -76,6 +79,9 @@ export const Message = ({ item, user }: MessageUserType): React.JSX.Element => {
     )
 };
 
+/**
+ * Wraps the Message component in a memoized version
+ */
 export const MemoizedMessage = memo(Message, (prevProps, nextProps) => {
     return prevProps.item === nextProps.item
         && prevProps.user === nextProps.user;

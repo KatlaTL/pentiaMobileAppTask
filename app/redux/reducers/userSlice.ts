@@ -30,8 +30,16 @@ const userSlice = createSlice({
     }
 })
 
+/**
+ * User actions.
+ * login saves the authorized user object in state.
+ * logout removes the user.
+ */
 export const { login, logout } = userSlice.actions;
 
+/**
+ * @returns Returns the user object
+ */
 export const selectUser = (state: RootState) => state.user.user;
 
 export default userSlice;

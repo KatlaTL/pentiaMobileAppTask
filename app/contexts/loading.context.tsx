@@ -12,6 +12,11 @@ const initialState = {
 
 const LoadingContext = createContext<LoadingStateType>(initialState);
 
+/**
+ * Loading Provider. Used to check if the app has fully loaded.
+ * Check if the app has loaded by using the value isLoaded: boolean.
+ * @param children 
+ */
 export const LoadingProvider = ({ children }) => {
     const { isLoaded } = useAuth();
 
@@ -25,6 +30,10 @@ export const LoadingProvider = ({ children }) => {
     )
 }
 
+/**
+ * LoadingContext consumer
+ * @returns values of LoadingContext: isLoaded: boolean
+ */
 export const useLoadingContext = () => {
     const context = useContext(LoadingContext);
 

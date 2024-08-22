@@ -1,5 +1,8 @@
 import { Alert } from "react-native";
 
+/**
+ * Create an alert with a single OK button
+ */
 export const dialogueWithOK = (title: string, message: string, onPressOK?: Function) => {
     Alert.alert(title, message, [
         { text: "OK", onPress: onPressOK ? () => onPressOK() : () => null },
@@ -18,6 +21,11 @@ type dialogueWithTwoOptionsType = {
     }
 }
 
+/**
+ * Create an alert with two options buttons and a cancel button
+ * @param optionOne - Object with an onPress function and a text
+ * @param optionTwo - Object with an onPress function and a text
+*/
 export const dialogueWithTwoOptions = ({ title, message, optionOne, optionTwo }: dialogueWithTwoOptionsType) => {
     Alert.alert(title, message, [
         { text: optionOne.text, onPress: () => optionOne.onPress() },
