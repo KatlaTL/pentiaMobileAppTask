@@ -2,7 +2,6 @@ import { RefreshControl, ScrollView } from "react-native";
 import { ListItem } from "./list-item";
 import { ChatRoomListType } from "../../../redux/reducers/chatRoomListSlice";
 import { roomStyle } from "../../../assets/styles/roomStyle";
-import { ChatRoomsNavigationProps } from "../../../navigators/app.navigator";
 
 type ChatRoomPresentationType = {
     chatRooms: ChatRoomListType[];

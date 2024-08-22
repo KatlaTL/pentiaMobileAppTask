@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
-import { ListItem } from "./_components/list-item";
-import { roomStyle } from "../../assets/styles/roomStyle";
 import { useAppDispatch } from "../../redux/store/store";
 import { ChatRoomListType, fetchChatRoomList, selectChatRoomList } from "../../redux/reducers/chatRoomListSlice";
 import { ChatRoomsNavigationProps } from "../../navigators/app.navigator";
