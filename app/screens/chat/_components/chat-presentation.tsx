@@ -6,6 +6,7 @@ import { colors } from "../../../assets/styles/colors"
 import { MemoizedMessage } from "./message"
 import { MessageType } from "../../../redux/reducers/messageSlice"
 import { UserType } from "../../../redux/reducers/userSlice"
+import { ChatButton } from "./chat-button"
 
 type ChatPresentationType = {
     user: UserType | null;
@@ -42,9 +43,12 @@ export const ChatPresentation = ({ user, isLoadingMessages, messages, fetchMoreM
                 onEndReached={fetchMoreMessages}
             />
             <View style={roomStyle.chatInputWrapper}>
-                <TouchableOpacity style={[roomStyle.uploadPhoto, colors.purpleBackgroundColor]} onPress={onImagePicker}>
-                    <Text style={[roomStyle.uploadPhotoText, colors.whiteTextColor]}>Upload Photo</Text>
-                </TouchableOpacity>
+                <ChatButton
+                    buttonText="Upload Photo"
+                    onPress={onImagePicker}
+                    style={[roomStyle.uploadPhoto, colors.purpleBackgroundColor]}
+                    textStyle={[roomStyle.uploadPhotoText, colors.whiteTextColor]}
+                />
                 <TextInput
                     style={roomStyle.chatInputField}
                     placeholder="Aa"
@@ -53,9 +57,13 @@ export const ChatPresentation = ({ user, isLoadingMessages, messages, fetchMoreM
                     defaultValue={chatMessage}
                     onSubmitEditing={handleSendMessage}
                 />
-                <TouchableOpacity style={[roomStyle.chatButton, colors.blueBackgroundColor]} onPress={handleSendMessage} disabled={chatMessage.length === 0}>
-                    <Text style={[roomStyle.chatButtonText, colors.whiteTextColor]}>Send</Text>
-                </TouchableOpacity>
+                <ChatButton
+                    buttonText="Send"
+                    disabled={chatMessage.length === 0}
+                    onPress={handleSendMessage}
+                    style={[roomStyle.chatButton, colors.blueBackgroundColor]}
+                    textStyle={[roomStyle.chatButtonText, colors.whiteTextColor]}
+                />
             </View>
         </>
     )
