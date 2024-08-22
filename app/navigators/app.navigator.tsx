@@ -22,19 +22,6 @@ export type ChatRoomsNavigationProps = NativeStackScreenProps<AppStackParamList,
 export type ChatNavigationProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 
-export const ChatStack = () => {
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: false
-            }}
-        >
-            <Stack.Screen name="ChatRooms" component={ChatRoomsScreen} />
-            <Stack.Screen name="Chat" component={ChatScreen} />
-        </Stack.Navigator>
-    )
-}
-
 const AppDrawer = () => {
     return (
         <Drawer.Navigator
