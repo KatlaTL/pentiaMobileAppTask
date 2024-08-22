@@ -9,8 +9,13 @@ import { UserType } from '../redux/reducers/userSlice';
  */
 export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
     try {
-        const rooms = await firestore().collection("rooms").orderBy("date_last_message", "desc").get();
+        const rooms = await firestore()
+            .collection("rooms")
+            .orderBy("date_last_message", "desc")
+            .get();
+
         const newRooms: ChatRoomListType[] = [];
+
         rooms.forEach(value => {
             const data = value.data() as ChatRoomListType;
             newRooms.push({
@@ -22,6 +27,7 @@ export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
                 date_last_message: value.data().date_last_message.toDate().toString(),
             } as ChatRoomListType)
         })
+
         return newRooms;
     } catch (err) {
         console.error("Can't fetch rooms from firestore", err);
@@ -124,7 +130,6 @@ export const getMoreMessagesAfterLastDocument = async (chat_id: string, lastDocu
  */
 export const sendMessage = (chat_id: string, content: string, user: UserType | null, type?: string): Promise<void> => {
     try {
-
         const roomReference = firestore().collection("rooms").doc(chat_id);
 
         return firestore().runTransaction(async transaction => {
