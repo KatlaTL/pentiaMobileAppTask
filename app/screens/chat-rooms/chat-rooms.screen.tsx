@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../redux/store/store";
-import { ChatRoomListType, fetchChatRoomList, selectChatRoomList } from "../../redux/reducers/chatRoomListSlice";
+import { fetchChatRoomList, selectChatRoomList } from "../../redux/reducers/chatRoomListSlice";
 import { ChatRoomsNavigationProps } from "../../navigators/app.navigator";
-import { ChatRoonsPresentation } from "./_components/chat-rooms-presentation";
+import { ChatRoomsPresentation } from "./_components/chat-rooms-presentation";
 
 /**
  * Displays Chat Rooms Screen
@@ -33,7 +33,7 @@ const ChatRoomsScreen = ({ navigation }: ChatRoomsNavigationProps): React.JSX.El
      */
     const handleRoomClick = (chat_id: string, chat_name: string) => navigation.navigate("Chat", { chat_id: chat_id, chat_name: chat_name });
 
-    return <ChatRoonsPresentation
+    return <ChatRoomsPresentation
         chatRooms={chatRoomList}
         getRoomList={getRoomList}
         handleRoomClick={handleRoomClick}

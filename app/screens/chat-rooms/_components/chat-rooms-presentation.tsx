@@ -13,7 +13,7 @@ type ChatRoomPresentationType = {
 /**
  * Chat Rooms Presentations 
  */
-export const ChatRoonsPresentation = ({ chatRooms, handleRoomClick, refreshing, getRoomList }: ChatRoomPresentationType): React.JSX.Element => {
+export const ChatRoomsPresentation = ({ chatRooms, handleRoomClick, refreshing, getRoomList }: ChatRoomPresentationType): React.JSX.Element => {
 
     const listOfRooms = chatRooms.map((roomProps: ChatRoomListType, index) => {
         return <ListItem
