@@ -2,7 +2,7 @@ import React from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { signInStyle as styles } from "../../../assets/styles/signInStyle";
 import { globalStyle } from "../../../assets/styles/global";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 type LoginButtonType = {
     onPress: () => void,
