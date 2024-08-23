@@ -1,7 +1,8 @@
 import notifee, { AuthorizationStatus } from '@notifee/react-native';
-import messaging from '@react-native-firebase/messaging';
+import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import { getAllFCMTokensByUserIDs, getUserByID, updateUserByID } from './AuthService';
 import { addUserToChatRoomSubscriberList, getChatRoomSubscriberList } from './ChatRoomService';
+import { Alert, Linking } from 'react-native';
 
 /**
  * If the user accepts notifications, then get FCM Token and save it on the user in Firestore and add the user to the chat rooms notification subscriber list
@@ -108,4 +109,40 @@ export const sendNotificationOnNewMessage = async (roomID: string) => {
     } catch (err) {
         console.error(err);
     }
+}
+
+export const listenForNotificationForeground = async () => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+        const url = await getSupportedNotificationURL(remoteMessage);
+
+        if (url) {
+            console.log("no here")
+            Linking.openURL(url);
+        }
+    });
+    return unsubscribe;
+}
+
+export const listenForNotificationBackground = async () => {
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+        const url = await getSupportedNotificationURL(remoteMessage);
+
+        if (url) {
+            console.log("here her here")
+            Linking.openURL(url);
+        }
+    })
+}
+
+export const getSupportedNotificationURL = async (message: FirebaseMessagingTypes.RemoteMessage): Promise<string | null> => {
+    const url = message.data?.url as string;
+
+    if (url) {
+        const supported = await Linking.canOpenURL(url);
+
+        if (supported) {
+            return url;
+        }
+    }
+    return null;
 }
