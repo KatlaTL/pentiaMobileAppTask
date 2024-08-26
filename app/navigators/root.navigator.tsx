@@ -8,7 +8,8 @@ import { useLoadingContext } from "../contexts/loading.context";
 import { Linking } from "react-native";
 import { getSupportedNotificationURL } from "../services/NotificationService";
 import messaging from '@react-native-firebase/messaging';
-import { useNotificationContext } from "../contexts/notification.context";
+import useNotification from "../hooks/useNotification";
+import { useEffect } from "react";
 
 type RootStackParamList = {
     Splash: undefined;
@@ -24,7 +25,42 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export const RootNavigator = () => {
     const { user } = useAuth();
     const { isLoaded } = useLoadingContext();
-    const { setNotificationURL } = useNotificationContext();
+    const { doesURLRequiresAuth, notificationState, actionsDispatch } = useNotification();
+
+    /**
+     * Redirect the user to the stored deeplink URL after the user has logged in
+     * and then reset the notification stored in notification context
+     */
+    useEffect(() => {
+        if (notificationState.requiresAuth && notificationState.notificationURL) {
+            Linking.openURL(notificationState.notificationURL);
+            actionsDispatch?.reset();
+        }
+    }, [user]);
+
+    /**
+     * Redirect the user to the stored deeplink URL after the application has loaded if the route doesn't require authorization
+     * and then reset the notification stored in notification context
+     */
+    useEffect(() => {
+        if (!notificationState.requiresAuth && notificationState.notificationURL) {
+            Linking.openURL(notificationState.notificationURL);
+            actionsDispatch?.reset();
+        }
+    }, [isLoaded]);
+
+    /**
+     * Runs everytime Linking.openURL() has been called 
+     */
+    const linkingSubscriberFunction = (url: string, listener: (url: string) => void) => {
+        const requiresAuth = doesURLRequiresAuth(url);
+
+        if (!!requiresAuth && !user) {
+            actionsDispatch?.requiresAuth(requiresAuth, url);
+        } else {
+            listener(url);
+        }
+    }
 
     const linkingConfig = {
         prefixes: ["pentiamobileapptask://"],
@@ -32,8 +68,9 @@ export const RootNavigator = () => {
             screens: {
                 App: {
                     path: "app",
+                    initialRouteName: "AppDrawer",
                     screens: {
-                        Chat: "chat/:chat_id"
+                        Chat: "chat/:chat_id/:chat_name"
                     }
                 },
                 Auth: {
@@ -47,20 +84,18 @@ export const RootNavigator = () => {
                 }
             }
         },
+        //The initial URL the app uses when it loads
         getInitialURL: async () => {
             const initialNotification = await messaging().getInitialNotification();
-            console.log("initialNotification", initialNotification);
 
-            if (initialNotification) {
+            if (!!initialNotification) {
                 const url = await getSupportedNotificationURL(initialNotification);
 
                 if (url) {
-                    console.log("isloaded nav", isLoaded);
-                    console.log("user nav", user);
-                    if (!isLoaded || !user) {
-                        setNotificationURL(url);
+                    const requiresAuth = doesURLRequiresAuth(url);
+                    if (!isLoaded || (requiresAuth && !user)) {
+                        actionsDispatch?.requiresAuth(requiresAuth, url);
                     } else {
-                        console.log("what about here?")
                         Linking.openURL(url);
                     }
                 }
@@ -68,15 +103,19 @@ export const RootNavigator = () => {
 
             return await Linking.getInitialURL();
         },
+        /**
+         * The subscribe function is used to handle incoming links instead of the default deeplink handling.
+         * It's called when Linking.openURL() is used.
+         * @param Listener The subscribe function will recieve a listener function as an argument, which is used to let React Navigation handle the incoming URL
+         */
         subscribe: (listener) => {
-
-            const linkingSubscription = Linking.addEventListener("url", ({ url }) => listener(url));
+            const linkingSubscription = Linking.addEventListener("url", ({ url }) => linkingSubscriberFunction(url, listener));
 
             const unsubscribeNotification = messaging().onNotificationOpenedApp((message) => {
                 const url = message.data?.url;
 
-                if (url) {
-                    listener(url);
+                if (url && typeof url === "string") {
+                    linkingSubscriberFunction(url, listener);
                 }
             })
 

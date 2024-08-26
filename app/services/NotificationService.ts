@@ -1,8 +1,8 @@
-import notifee, { AuthorizationStatus } from '@notifee/react-native';
+import notifee, { AuthorizationStatus, Notification } from '@notifee/react-native';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import { getAllFCMTokensByUserIDs, getUserByID, updateUserByID } from './AuthService';
 import { addUserToChatRoomSubscriberList, getChatRoomSubscriberList } from './ChatRoomService';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 
 /**
  * If the user accepts notifications, then get FCM Token and save it on the user in Firestore and add the user to the chat rooms notification subscriber list
@@ -111,30 +111,38 @@ export const sendNotificationOnNewMessage = async (roomID: string) => {
     }
 }
 
-export const listenForNotificationForeground = async () => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-        const url = await getSupportedNotificationURL(remoteMessage);
-
-        if (url) {
-            console.log("no here")
-            Linking.openURL(url);
-        }
-    });
-    return unsubscribe;
-}
-
+/**
+ * Listen for notification when the app is in the background or terminated.
+ * Listens for both FCM and Notifee notifications
+ * Must be called outside of the applications lifecycle, e.g. alongside your AppRegistry.registerComponent() method call at the the entry point of your application code.
+ */
 export const listenForNotificationBackground = async () => {
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         const url = await getSupportedNotificationURL(remoteMessage);
 
         if (url) {
-            console.log("here her here")
             Linking.openURL(url);
         }
-    })
+    });
+
+    notifee.onBackgroundEvent(async ({ detail }) => {
+        const url = await getSupportedNotificationURL(detail.notification);
+
+        if (url) {
+            Linking.openURL(url);
+        }
+    });
 }
 
-export const getSupportedNotificationURL = async (message: FirebaseMessagingTypes.RemoteMessage): Promise<string | null> => {
+/**
+ * Check if the notification URL can be opened.
+ * @returns {string} The notification URL or null if the URL is invalid
+ */
+export const getSupportedNotificationURL = async (message: FirebaseMessagingTypes.RemoteMessage | (Notification | undefined)): Promise<string | null> => {
+    if (!message) {
+        return null;
+    }
+
     const url = message.data?.url as string;
 
     if (url) {
@@ -145,4 +153,28 @@ export const getSupportedNotificationURL = async (message: FirebaseMessagingType
         }
     }
     return null;
+}
+
+/**
+ *  Creates a notifee notifications 
+ */
+export const onDisplayNotification = async (title: string, body: string, data: any) => {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission()
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+        title: title,
+        body: body,
+        data: data,
+        android: {
+            channelId,
+        },
+    });
 }

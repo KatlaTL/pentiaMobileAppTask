@@ -32,7 +32,8 @@ const useAuth = (): AuthStateType => {
                         displayName: userState.displayName,
                         photoURL: userState.photoURL,
                         FCMToken: await getFCMDeviceToken()
-                    }))
+                    })
+                )
             } else {
                 appDispatch(logout());
             }
@@ -42,7 +43,6 @@ const useAuth = (): AuthStateType => {
 
         return unsubscribe;
     }, [])
-
 
     return { user, isLoaded };
 }

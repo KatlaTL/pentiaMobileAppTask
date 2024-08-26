@@ -135,7 +135,8 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
         const unsubscribe = getChatRoomMessagesSnapshot({ chat_id, fetchLimit, onNextCB: handleMessageSnapshot });
 
         return () => unsubscribe();
-    }, []);
+    }, [chat_id]);
+
 
     return <ChatPresentation
         fetchMoreMessages={debounceFetchMoreMessages}

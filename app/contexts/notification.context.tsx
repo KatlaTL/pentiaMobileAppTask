@@ -1,44 +1,80 @@
-import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { listenForNotificationForeground } from "../services/NotificationService";
-import useAuth from "../hooks/useAuth";
-import { useLoadingContext } from "./loading.context";
-import { Linking } from "react-native";
+import { createContext, useContext, useReducer } from "react"
 
-type NotificationStateType = {
+type ReducerStateType = {
     notificationURL: string | null;
-    setNotificationURL: Dispatch<SetStateAction<string>>
+    requiresAuth: boolean | null;
 }
 
-const initialState: NotificationStateType = {
+const reducerInitialState: ReducerStateType = {
     notificationURL: null,
-    setNotificationURL: () => null
+    requiresAuth: null
 }
 
-const NotificationContext = createContext<NotificationStateType>(initialState);
+export type NotificationStateType = {
+    notificationState: ReducerStateType;
+    actionsDispatch: {
+        notificationURL: (url: string) => void,
+        requiresAuth: (authRequired: boolean, url: string) => void,
+        reset: () => void
+    } | null
+}
 
+const contextInitialState: NotificationStateType = {
+    notificationState: reducerInitialState,
+    actionsDispatch: null
+}
+
+const NotificationContext = createContext<NotificationStateType>(contextInitialState);
+
+
+const notificationReducer = (state, action) => {
+    switch (action.type) {
+        case "notificationURL":
+            return {
+                ...state,
+                notificationURL: action.notificationURL
+            };
+        case "requiresAuth":
+            return {
+                ...state,
+                notificationURL: action.notificationURL,
+                requiresAuth: action.requiresAuth
+            };
+        case "reset":
+            return {
+                ...reducerInitialState
+            }
+        default:
+            console.error('Unknow action: ' + action.type);
+    }
+}
+
+/**
+ * Notification Provider.
+ * Used to store a notification URL while the app is loading or the user is signing in.
+ * @param children 
+ */
 export const NotificationProvider = ({ children }) => {
-    const [notificationURL, setNotificationURL] = useState<string>("");
-    const { isLoaded } = useLoadingContext();
-    const { user } = useAuth();
+    const [state, dispatch] = useReducer(notificationReducer, reducerInitialState);
 
-    useEffect(() => {
-        listenForNotificationForeground();
-    }, [])
-
-    useEffect(() => {
-        console.log("isLoaded", isLoaded)
-        console.log("user", user)
-        console.log("notification hook", notificationURL);
-        if (notificationURL && isLoaded && user) {
-            Linking.openURL(notificationURL);
-        }
-    }, [notificationURL, isLoaded, user]);
+    const actionDispatch = {
+        notificationURL: (url: string) => dispatch({
+            type: "notificationURL",
+            notificationURL: url
+        }),
+        requiresAuth: (authRequired: boolean, url: string) => dispatch({
+            type: "requiresAuth",
+            requiresAuth: authRequired,
+            notificationURL: url || null
+        }),
+        reset: () => dispatch({ type: "reset" })
+    }
 
     return (
         <NotificationContext.Provider
             value={{
-                notificationURL: notificationURL,
-                setNotificationURL: setNotificationURL
+                actionsDispatch: actionDispatch,
+                notificationState: state
             }}
         >
             {children}
