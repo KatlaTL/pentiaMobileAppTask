@@ -6,6 +6,28 @@ A link to the case description can be found below.
 Pentia mobile app case - [Link to case description](app/assets/development_task_2024.1.pdf)
 
 
+## Table of Contents
+
+<ol>
+    <li>
+        <a href="#tech-stack">Tech Stack</a>
+    </li>
+    <li>
+        <a href="#current-concerns-and-challenges">Current concerns and challenges</a>
+    </li>
+    <li>
+        <a href="#run-the-project">Run the project</a>
+        <ul>
+            <li><a href="#prerequisites">Prerequisites</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+        </ul>
+    </li>
+    <li><a href="#project-structure">Project Structure</a></li>
+</ol>
+<br />
+
+
+
 ## Tech Stack
 The project are developed in React Native (without Expo) and Typescript. \
 Google Firebase are used to handle all backend related tasks: Authentication, Database, Storage and Push notifications (FCM)
@@ -26,7 +48,7 @@ I have tried few things such as clearing all caches and updating different depen
 For that reason the app only works on android.
 
 
-## Setup and run the project
+## Run the project
 Follow these steps to run app
 
 ### Prerequisites
@@ -85,6 +107,8 @@ Before running the app make sure you have following setup and installed:
         ```
         yarn ios
         ````
+
+<p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
 
 ## Project Structure
 The project structure for the Pentia Mobile Chat app is organized as following:
@@ -181,3 +205,5 @@ app
     Directory for all services files, primarily used to talk with the Firebase backend
 9. **`utils` Directory**
     Directory for all files containing utility functions
+
+<p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
