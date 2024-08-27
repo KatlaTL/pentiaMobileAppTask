@@ -18,7 +18,7 @@ import errorMessages from "../../constants/errorMessages.json";
  * Displays Chat Screen
  */
 const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
-    const { chat_id } = route.params;
+    const { chat_id, chat_name } = route.params;
 
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
     const [chatMessage, setChatMessage] = useState<string>("");
@@ -67,7 +67,7 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
                 await enableNotificationsForRoomID(chat_id, user?.uid || "");
 
                 // Send notification to users who gave permission
-                await sendNotificationOnNewMessage(chat_id);
+                await sendNotificationOnNewMessage(chat_id, chat_name);
             })
             .catch(() => dialogueWithOK(errorMessages['failed-to-send-message'].title, errorMessages['failed-to-send-message'].message));
     };
