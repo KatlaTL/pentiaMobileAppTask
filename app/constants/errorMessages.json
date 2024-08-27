@@ -4,7 +4,27 @@
         "message": "Login with a different account or contact customer support"
     },
     "something-went-wrong": {
-        "title": "Something went wrong",
+        "title": "Something went wrong when signing in",
         "message": "Please login again" 
+    },
+    "failed-to-load-chat-rooms": {
+        "title": "Something went wrong when loading the chat rooms",
+        "message": "Please try to reload the page"
+    },
+    "failed-to-send-message": {
+        "title": "Something went wrong when sending the message",
+        "message": "Please try to send a new message"
+    },
+    "failed-to-load-more-messages": {
+        "title": "Something went wrong when loading more messages",
+        "message": "Please reload the page and then try again"
+    },
+    "failed-to-upload-image": {
+        "title": "Something went wrong when uploading image",
+        "message": "Please try again"
+    },
+    "failed-to-load-messages": {
+        "title": "Something went wrong when loading the chat room messsages",
+        "message": "Please try to reload the page"
     }
 }

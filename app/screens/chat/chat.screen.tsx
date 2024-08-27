@@ -9,9 +9,10 @@ import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessa
 import { debounce } from "../../utils/helpers";
 import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
 import { uploadImage } from "../../services/ImageService";
-import { dialogueWithTwoOptions } from "../../utils/dialogues";
+import { dialogueWithOK, dialogueWithTwoOptions } from "../../utils/dialogues";
 import { ChatNavigationProps } from "../../navigators/app.navigator";
 import { ChatPresentation } from "./_components/chat-presentation";
+import errorMessages from "../../constants/errorMessages.json";
 
 /**
  * Displays Chat Screen
@@ -68,7 +69,7 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
                 // Send notification to users who gave permission
                 await sendNotificationOnNewMessage(chat_id);
             })
-            .catch((err) => console.error(err)); // TO-DO handle exceptions
+            .catch(() => dialogueWithOK(errorMessages['failed-to-send-message'].title, errorMessages['failed-to-send-message'].message));
     };
 
     /**
@@ -116,8 +117,8 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
             .then(data => {
                 appDispatch(loadMoreRoomMessages({ chat_id, messages: data.messages, lastDocID: data.lastDocumenID }));
             })
-            .catch(err => console.error(err)) // TO-DO handle exceptions
-            .finally(() => setIsLoadingMessages(false))
+            .catch(() => dialogueWithOK(errorMessages['failed-to-load-more-messages'].title, errorMessages['failed-to-load-more-messages'].message))
+            .finally(() => setIsLoadingMessages(false));
     };
 
     /**

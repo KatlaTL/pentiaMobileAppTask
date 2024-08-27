@@ -1,6 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
 import { getAllChatRooms } from "../../services/ChatRoomService";
+import { dialogueWithOK } from "../../utils/dialogues";
+import errorMessages from "../../constants/errorMessages.json"
 
 export type ChatRoomListType = {
     chat_id: string,
@@ -31,10 +33,10 @@ const roomListSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchChatRoomList.fulfilled, (state, action) => {
-                state.chatRoomsList = [...action.payload]
+                state.chatRoomsList = [...action.payload];
             })
             .addCase(fetchChatRoomList.rejected, (state, action) => {
-                //TO-DO handle getAllChatRooms error here
+                dialogueWithOK(errorMessages['failed-to-load-chat-rooms'].title, errorMessages['failed-to-load-chat-rooms'].message);
             })
     }
 })

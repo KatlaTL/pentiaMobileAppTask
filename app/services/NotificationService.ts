@@ -46,7 +46,7 @@ export const enableNotificationsForRoomID = async (roomID: string, userID: strin
             throw "Something went wrong while updating room notification list";
         }
     } catch (err) {
-        console.error(err); // TO-DO handle exceptions 
+        console.error(err); // TO-DO handle exceptions
     }
 }
 

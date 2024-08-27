@@ -2,6 +2,8 @@ import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firest
 import { ChatRoomListType } from '../redux/reducers/chatRoomListSlice';
 import { MessageType } from '../redux/reducers/messageSlice';
 import { UserType } from '../redux/reducers/userSlice';
+import { dialogueWithOK } from '../utils/dialogues';
+import errorMessages from "../constants/errorMessages.json";
 
 /**
  * Get all chat rooms saved in Firestore
@@ -30,7 +32,6 @@ export const getAllChatRooms = async (): Promise<ChatRoomListType[]> => {
 
         return newRooms;
     } catch (err) {
-        console.error("Can't fetch rooms from firestore", err);
         throw err;
     }
 };
@@ -77,9 +78,10 @@ export const getChatRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB
             onNextCB(querySnapshot)
         }, (err) => {
             if (typeof onErrorCB === "function") {
-                onErrorCB(err)
+                onErrorCB(err);
             }
-            console.error(err);
+
+            dialogueWithOK(errorMessages['failed-to-load-messages'].title, errorMessages['failed-to-load-messages'].message);
         });
 };
 

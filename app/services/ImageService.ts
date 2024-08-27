@@ -2,6 +2,8 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { sendMessage } from './ChatRoomService';
 import { UserType } from '../redux/reducers/userSlice';
+import errorMessages from "../constants/errorMessages.json";
+import { dialogueWithOK } from '../utils/dialogues';
 
 /**
  * Saves an image in Firebase storage and then the URL in Firestore
@@ -43,7 +45,7 @@ export const uploadImage = async (chat_id: string, user: UserType | null, fromLi
         }));
 
     } catch (err) {
-        console.error(err); // TO-DO handle exception
+        dialogueWithOK(errorMessages['failed-to-upload-image'].title, errorMessages['failed-to-upload-image'].message);
     }
 }
 
