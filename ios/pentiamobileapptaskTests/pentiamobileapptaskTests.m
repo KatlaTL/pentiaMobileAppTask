@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface simpleReactNativeChattingAppTests : XCTestCase
+@interface pentiamobileapptaskTests : XCTestCase
 
 @end
 
-@implementation simpleReactNativeChattingAppTests
+@implementation pentiamobileapptaskTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {
