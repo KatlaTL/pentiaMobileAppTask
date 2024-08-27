@@ -1,7 +1,8 @@
-import { RefreshControl, ScrollView } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
 import { ListItem } from "./list-item";
 import { ChatRoomListType } from "../../../redux/reducers/chatRoomListSlice";
 import { roomStyle } from "../../../assets/styles/roomStyle";
+import { useCallback } from "react";
 
 type ChatRoomPresentationType = {
     chatRooms: ChatRoomListType[];
@@ -15,20 +16,22 @@ type ChatRoomPresentationType = {
  */
 export const ChatRoomsPresentation = ({ chatRooms, handleRoomClick, refreshing, getRoomList }: ChatRoomPresentationType): React.JSX.Element => {
 
-    const listOfRooms = chatRooms.map((roomProps: ChatRoomListType, index) => {
+    const renderItem = useCallback(({ item, index }: { item: ChatRoomListType, index: number }) => {
         return <ListItem
-            {...roomProps}
-            handleClick={() => handleRoomClick(roomProps.chat_id, roomProps.chat_name)}
-            key={roomProps.chat_name + index}
+            {...item}
+            handleClick={() => handleRoomClick(item.chat_id, item.chat_name)}
+            key={item.chat_name + index}
         />
-    });
+    }, [])
 
     return (
-        <ScrollView
+        <FlatList
             contentContainerStyle={roomStyle.roomList}
+            data={chatRooms}
+            renderItem={renderItem}
+            keyExtractor={(item: ChatRoomListType) => item.chat_id}
+            overScrollMode="never"
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getRoomList} />}
-        >
-            {listOfRooms}
-        </ScrollView>
+        />
     )
 }
