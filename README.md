@@ -26,3 +26,68 @@ I have tried few things such as clearing all caches and updating different depen
 For that reason the app only works on android.
 
 
+## Setup and run the project
+Follow these steps to run app
+
+### Prerequisites
+Before running the app make sure you have following setup and installed:
+- Setup a [React Native](https://reactnative.dev/docs/0.74/set-up-your-environment) environments for Android and IOS
+- [Node](https://nodejs.org/en)
+
+
+### Deployment
+1. Clone the repository
+    ```
+    git clone https://github.com/KatlaTL/pentiaMobileAppTask.git
+    ```
+2. Change the working directory to the project:
+    ```
+    cd pentiaMobileAppTask
+    ```
+3. Install dependencies:
+    * NPM:
+    ```
+    npm install
+    ```
+    * Yarn:
+    ```
+    yarn install
+    ```
+4. (Optional) If you want to run it on the IOS Simulator to see the current error message:
+    ```
+    cd ios && pod install --repo-update && cd ..
+    ```
+5. Run the application:
+    - Start the metro bundler
+        * NPM
+        ```
+        npm run start
+        ```
+        * Yarn
+        ```
+        yarn start
+        ````
+    - Run the app on Android
+        * NPM
+        ```
+        npm run android
+        ```
+        * Yarn
+        ```
+        yarn android
+        ````
+    - Run the app on IOS
+        * NPM
+        ```
+        npm run ios
+        ```
+        * Yarn
+        ```
+        yarn ios
+        ````
+
+## Project Structure
+The project structure for the Pentia Mobile Chat app is organized as following:
+```
+
+```
