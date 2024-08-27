@@ -17,7 +17,7 @@ Further development has since been done on a MacBook Pro with Xcode, however the
 
 After a succesfull build the following error is shown on the simulator:
 
-- Invariant Violation: "simpleReactNativeChattingApp" has not been registered. This can happen if:
+- Invariant Violation: "PentiaMobileAppTaskApp" has not been registered. This can happen if:
     * Metro (the local dev server) is run from the wrong folder. Check if Metro is running, stop it and restart it in the current project.
     * A module failed to load due to an error and `AppRegistry.registerComponent` wasn't called., js engine: hermes
 
@@ -89,5 +89,95 @@ Before running the app make sure you have following setup and installed:
 ## Project Structure
 The project structure for the Pentia Mobile Chat app is organized as following:
 ```
-
+app
+│
+├── App.tsx
+├── assets
+│   ├── development_task_2024.1.pdf
+│   ├── img
+│   │   └── comment.svg
+│   └── styles
+│       ├── colors.ts
+│       ├── global.ts
+│       ├── roomStyle.ts
+│       └── signInStyle.ts
+├── constants
+│   └── errorMessages.json
+├── contexts
+│   ├── loading.context.tsx
+│   └── notification.context.tsx
+├── hooks
+│   ├── useAuth.ts
+│   └── useNotification.ts
+├── navigators
+│   ├── app.navigator.tsx
+│   ├── auth.navigator.tsx
+│   └── root.navigator.tsx
+├── redux
+│   ├── reducers
+│   │   ├── chatRoomListSlice.ts
+│   │   ├── messageSlice.ts
+│   │   └── userSlice.ts
+│   └── store
+│       └── store.ts
+├── screens
+│   ├── chat
+│   │   ├── _components
+│   │   │   ├── chat-bubble.tsx
+│   │   │   ├── chat-button.tsx
+│   │   │   ├── chat-presentation.tsx
+│   │   │   └── message.tsx
+│   │   └── chat.screen.tsx
+│   ├── chat-rooms
+│   │   ├── _components
+│   │   │   ├── chat-rooms-presentation.tsx
+│   │   │   ├── item-section.tsx
+│   │   │   └── list-item.tsx
+│   │   └── chat-rooms.screen.tsx
+│   ├── signin
+│   │   ├── _components
+│   │   │   └── login-button.tsx
+│   │   └── signin.screen.tsx
+│   └── splash
+│       └── splash.screen.tsx
+├── services
+│   ├── AuthService.ts
+│   ├── ChatRoomService.ts
+│   ├── ImageService.ts
+│   └── NotificationService.ts
+└── utils
+    ├── dialogues.ts
+    └── helpers.ts
 ```
+
+1. **`App.tsx` File**
+    This is the root file of the app
+2. **`assets` Directory**
+    Directory for all assets and styles
+    - **`img`** Contains images and icons
+    - **`styles`** Contains global and screen specific styles
+2. **`constants` Directory**
+    Directory for constant files suchs error messages
+3. **`contexts` Directory**
+    Directory for contexts files
+4. **`hooks` Directory**
+    Directory for custom hooks
+5. **`navigators` Directory**
+    Directory for the apps navigators: Root navigator, App navigator and Auth navigator
+6. **`redux` Directory**
+    Directory for all Redux Store related files
+    - **`reducers`** The Redux Stores reducers
+    - **`store`** The Redux Store
+7. **`screens` Directory**
+    Directory for the different screens used across the app
+    - **`chat`** Chat screen
+        - **`_components_`** Components used in the chat screen
+    - **`chat-rooms`** Chat room screen
+        - **`_components_`** Components used in the chat rooms screen
+    - **`signin`** Sign in screen
+        - **`_components_`** Components used in the sign in screen
+    - **`splash`** Splash screen
+8. **`services`Directory**
+    Directory for all services files, primarily used to talk with the Firebase backend
+9. **`utils` Directory**
+    Directory for all files containing utility functions
