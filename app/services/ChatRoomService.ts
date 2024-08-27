@@ -58,14 +58,17 @@ export const getChatRoomSubCollectionDocByID = (roomID: string, docID: string): 
 type FetchMessagesSnapshotOptionsType = {
     chat_id: string,
     fetchLimit?: number,
-    startAfterDocID?: string,
     onNextCB: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
     onErrorCB?: (error: Error) => void
 };
 
 /**
- * Listening on the chat room messages Firestore snapshot
+ * Listening on Firestore chat room messages snapshot
+ * @param chat_id - The Chat rooms ID
  * @param fetchLimit important! - fetchLimit most be a number above 2 - TODO add error handling for it
+ * @param onNextCB - A callback to be called every time a new querysnapshot is available
+ * @param onErrorCB - A callback to be called if the listen fails or is cancelled
+ * @returns {Function} Returns an unsubscribe function to stop listening to events
  */
 export const getChatRoomMessagesSnapshot = ({ chat_id, fetchLimit = 50, onNextCB, onErrorCB }: FetchMessagesSnapshotOptionsType): () => void => {
     return firestore()
