@@ -30,6 +30,7 @@ export const roomStyle = StyleSheet.create({
     description: {
         fontSize: 16,
         fontWeight: Platform.OS === "ios" ? "300" : "500",
+        opacity: Platform.OS === "ios" ? .8 : 1,
     },
     floatRightWrapper: {
         alignSelf: "flex-end",
@@ -118,7 +119,8 @@ export const roomStyle = StyleSheet.create({
     chatUserSelf: {
         fontSize: 12,
         marginRight: "5%",
-        alignSelf: "flex-end"
+        alignSelf: "flex-end",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatMessageDate: {
         fontSize: 12,
@@ -128,7 +130,9 @@ export const roomStyle = StyleSheet.create({
     chatMessageSelfDate: {
         fontSize: 12,
         marginRight: "5%",
-        alignSelf: "center"
+        alignSelf: "center",
+        opacity: Platform.OS === "ios" ? .5 : 1,
+
     },
     chatInputWrapper: {
         flexDirection: "row",
