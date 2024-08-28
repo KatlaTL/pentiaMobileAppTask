@@ -32,6 +32,16 @@
 				<string>com.googleusercontent.apps.767477628703-bajr2q8cvajksb8iqvf9rsito6a74g76</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>pentiamobileapptask</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pentiamobileapptask</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
