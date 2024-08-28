@@ -83,7 +83,7 @@ Before running the app make sure you have following setup and installed:
     ```
     yarn install
     ```
-4. (Optional) If you want to run it on the IOS Simulator to see the current error message:
+4.  Install all the Pods for IOS:
     ```
     cd ios && pod install --repo-update && cd ..
     ```
