@@ -1,0 +1,10 @@
+{
+    "Simulator Target Bundle": "com.pentiamobileapptask",
+    "aps": { 
+        "alert": {
+            "title": "Chat notification test",
+            "body": "This is a notification test to open the cats chat using deep link"
+        }
+    },
+    "url": "pentiamobileapptask://app/chat/1kpHA8KZtOqyi42ozqnf"
+}
