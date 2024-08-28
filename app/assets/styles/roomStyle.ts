@@ -114,7 +114,8 @@ export const roomStyle = StyleSheet.create({
     },
     chatUser: {
         fontSize: 12,
-        marginLeft: "5%"
+        marginLeft: "5%",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatUserSelf: {
         fontSize: 12,
@@ -125,7 +126,8 @@ export const roomStyle = StyleSheet.create({
     chatMessageDate: {
         fontSize: 12,
         marginLeft: "5%",
-        alignSelf: "center"
+        alignSelf: "center",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatMessageSelfDate: {
         fontSize: 12,
