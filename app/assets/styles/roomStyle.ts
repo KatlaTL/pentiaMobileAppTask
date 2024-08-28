@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 export const roomStyle = StyleSheet.create({
     roomList: {
@@ -24,12 +24,12 @@ export const roomStyle = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        fontWeight: "700",
+        fontWeight: Platform.OS === "ios" ? "600" : "700",
         color: "black"
     },
     description: {
         fontSize: 16,
-        fontWeight: "500",
+        fontWeight: Platform.OS === "ios" ? "300" : "500",
     },
     floatRightWrapper: {
         alignSelf: "flex-end",
