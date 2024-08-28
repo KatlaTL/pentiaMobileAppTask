@@ -220,3 +220,18 @@ export const getChatRoomSubscriberList = async (roomID: string): Promise<ChatRoo
             }
         })
 };
+
+/**
+ * Get the chat room name by ID
+ * @returns {string} Name of the chat room 
+ */
+export const getChatRoomName = async (roomID: string): Promise<string> => {
+    return firestore()
+        .collection("rooms")
+        .doc(roomID)
+        .get()
+        .then(room => room.data()?.chat_name as string)
+        .catch(err => {
+            throw err;
+        });
+}
