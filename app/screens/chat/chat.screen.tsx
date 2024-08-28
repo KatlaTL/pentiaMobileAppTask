@@ -67,7 +67,7 @@ const ChatScreen = ({ route, navigation }: ChatNavigationProps): React.JSX.Eleme
                 await enableNotificationsForRoomID(chat_id, user?.uid || "");
 
                 // Send notification to users who gave permission
-                await sendNotificationOnNewMessage(chat_id, chat_name);
+                await sendNotificationOnNewMessage(chat_id);
             })
             .catch(() => dialogueWithOK(errorMessages['failed-to-send-message'].title, errorMessages['failed-to-send-message'].message));
     };

@@ -86,7 +86,7 @@ export const getFCMDeviceToken = async (): Promise<string> => {
 /**
  * Send notifications to all notification subscribers for the chat room
  */
-export const sendNotificationOnNewMessage = async (roomID: string, chatName: string) => {
+export const sendNotificationOnNewMessage = async (roomID: string) => {
     try {
         // Get list of users that are to receive notifications
         const subscriberList = await getChatRoomSubscriberList(roomID);
@@ -103,7 +103,7 @@ export const sendNotificationOnNewMessage = async (roomID: string, chatName: str
         }
 
         console.log("FCMTokens", FCMTokens);
-        console.log("notification URL:", `pentiamobileapptask://app/chat/${roomID}/${chatName}`);
+        console.log("notification URL:", `pentiamobileapptask://app/chat/${roomID}`);
 
         //TO-DO send push notification using REST api v1
 
