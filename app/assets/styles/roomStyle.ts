@@ -37,7 +37,7 @@ export const roomStyle = StyleSheet.create({
         flexDirection: "row"
     },
     commentWrapper: {
-        width: 40,
+        width: 50,
         marginTop: 10,
         justifyContent: "space-evenly"
     },
