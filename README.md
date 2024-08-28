@@ -45,6 +45,8 @@ Links to the Firebase documentation about the new API:
 
 To test the Push Notification Deep Links for IOS use the **`payload.apns`** file found in the projects root directory. Simply drag and drop it onto the IOS Simulator while the app is in the background to trigger the notification.
 
+[Clip](app/assets/Push%20Notification%20test%20Android%20Emulator.mov) of Push Notification Deep Link for Android Emulator
+
 <p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
 
 
