@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { useCallback } from "react"
 import { globalStyle } from "../../../assets/styles/global"
 import { roomStyle } from "../../../assets/styles/roomStyle"
@@ -29,7 +29,7 @@ export const ChatPresentation = ({ user, isLoadingMessages, messages, fetchMoreM
     ), []);
 
     return (
-        <>
+        <SafeAreaView style={{flex: 1}}>
             {isLoadingMessages && (
                 <View style={[globalStyle.activityIndicator, { marginTop: 30 }]}>
                     <ActivityIndicator size={50} color="#0000ff" />
@@ -68,6 +68,6 @@ export const ChatPresentation = ({ user, isLoadingMessages, messages, fetchMoreM
                     textStyle={[roomStyle.chatButtonText, colors.whiteTextColor]}
                 />
             </View>
-        </>
+        </SafeAreaView>
     )
 }
