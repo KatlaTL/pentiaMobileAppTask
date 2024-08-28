@@ -10,10 +10,10 @@ Pentia mobile app case - [Link to case description](app/assets/development_task_
 
 <ol>
     <li>
-        <a href="#tech-stack">Tech Stack</a>
+        <a href="#about-the-case">About the case</a>
     </li>
     <li>
-        <a href="#current-concerns-and-challenges">Current concerns and challenges</a>
+        <a href="#tech-stack">Tech Stack</a>
     </li>
     <li>
         <a href="#run-the-project">Run the project</a>
@@ -28,28 +28,9 @@ Pentia mobile app case - [Link to case description](app/assets/development_task_
 
 
 
-## Tech Stack
-The project are developed in React Native (without Expo) and Typescript. \
-Google Firebase are used to handle all backend related tasks: Authentication, Database, Storage and Push notifications (FCM)
+## About the case
+All of the tasks in the [case](app/assets/development_task_2024.1.pdf) has been completed, except for:
 
-
-## Current concerns and challenges
-The app has been created by using the CLI on a Windows computer and therefore only been tested on an Android Emulator. \
-Further development has since been done on a MacBook Pro with Xcode, however the project is unable to run on an Iphone simulator. 
-
-After a succesfull build the following error is shown on the simulator:
-
-- Invariant Violation: "PentiaMobileAppTaskApp" has not been registered. This can happen if:
-    * Metro (the local dev server) is run from the wrong folder. Check if Metro is running, stop it and restart it in the current project.
-    * A module failed to load due to an error and `AppRegistry.registerComponent` wasn't called., js engine: hermes
-
-I have tried few things such as clearing all caches and updating different dependencies, without luck. It is must likely due to some missing configuration for IOS after the project was created on a Windows computer. I have therefore decided that my time is better spent moving forward with other projects.
-
-For that reason the app only works on android.
-
-<hr/>
-
-All of the tasks in the [case](app/assets/development_task_2024.1.pdf) has been completed, except for: \
 Task 5. **Push functionality** 
 - Acceptance test 2. \
     "Every time someone writes a message in the room, a push message is sent to me". 
@@ -60,7 +41,16 @@ Links to the Firebase documentation about the new API:
 - https://firebase.google.com/docs/cloud-messaging/send-message
 - https://firebase.google.com/docs/cloud-messaging/migrate-v1
 
+<br />
+
+To test the Push Notification Deep Links for IOS use the **`payload.apns`** file found in the projects root directory. Simply drag and drop it onto the IOS Simulator while the app is in the background to trigger the notification.
+
 <p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
+
+
+## Tech Stack
+The project are developed in React Native (without Expo) and Typescript. \
+Google Firebase are used to handle all backend related tasks: Authentication, Database, Storage and Push notifications (FCM)
 
 ## Run the project
 Follow these steps to run app
