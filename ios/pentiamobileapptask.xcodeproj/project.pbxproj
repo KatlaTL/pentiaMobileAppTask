@@ -43,6 +43,7 @@
 		2A87A2383B2D4304769EB0B7 /* Pods-pentiamobileapptask-pentiamobileapptaskTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pentiamobileapptask-pentiamobileapptaskTests.release.xcconfig"; path = "Target Support Files/Pods-pentiamobileapptask-pentiamobileapptaskTests/Pods-pentiamobileapptask-pentiamobileapptaskTests.release.xcconfig"; sourceTree = "<group>"; };
 		3A1AE446E1259B4CC5636653 /* Pods-pentiamobileapptask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pentiamobileapptask.release.xcconfig"; path = "Target Support Files/Pods-pentiamobileapptask/Pods-pentiamobileapptask.release.xcconfig"; sourceTree = "<group>"; };
 		49273A402C73660B002EADFD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4968A0C82C7F12F4001E80B7 /* pentiamobileapptask.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pentiamobileapptask.entitlements; path = pentiamobileapptask/pentiamobileapptask.entitlements; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = pentiamobileapptask/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D27260D13A12919746D6121B /* Pods-pentiamobileapptask-pentiamobileapptaskTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pentiamobileapptask-pentiamobileapptaskTests.debug.xcconfig"; path = "Target Support Files/Pods-pentiamobileapptask-pentiamobileapptaskTests/Pods-pentiamobileapptask-pentiamobileapptaskTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DD7C8133B0D17CE7D13E49FC /* Pods_pentiamobileapptask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_pentiamobileapptask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +91,7 @@
 		13B07FAE1A68108700A75B9A /* pentiamobileapptask */ = {
 			isa = PBXGroup;
 			children = (
+				4968A0C82C7F12F4001E80B7 /* pentiamobileapptask.entitlements */,
 				49D7FE712C7F064200C9BDE4 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -495,6 +497,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = pentiamobileapptask/pentiamobileapptask.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = pentiamobileapptask/Info.plist;
@@ -523,6 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = pentiamobileapptask/pentiamobileapptask.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = pentiamobileapptask/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = pentiamobileapptask;
