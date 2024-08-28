@@ -4,7 +4,7 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useSelector } from 'react-redux';
 import { selectUser } from "../../redux/reducers/userSlice";
 import { useAppDispatch } from "../../redux/store/store";
-import { createMessageObject, getMoreMessagesAfterLastDocument, getChatRoomMessagesSnapshot, sendMessage } from "../../services/ChatRoomService";
+import { createMessageObject, getMoreMessagesAfterLastDocument, getChatRoomMessagesSnapshot, sendMessage, getChatRoomName } from "../../services/ChatRoomService";
 import { MessageType, loadMoreRoomMessages, selectRoomLastDocID, selectRoomMessages, setRoomMessages } from "../../redux/reducers/messageSlice";
 import { debounce } from "../../utils/helpers";
 import { enableNotificationsForRoomID, sendNotificationOnNewMessage } from "../../services/NotificationService";
@@ -17,7 +17,7 @@ import errorMessages from "../../constants/errorMessages.json";
 /**
  * Displays Chat Screen
  */
-const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
+const ChatScreen = ({ route, navigation }: ChatNavigationProps): React.JSX.Element => {
     const { chat_id, chat_name } = route.params;
 
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
@@ -137,6 +137,17 @@ const ChatScreen = ({ route }: ChatNavigationProps): React.JSX.Element => {
 
         return () => unsubscribe();
     }, [chat_id]);
+
+    /**
+     * Get the chat room name if chat_name param is undefined
+     */
+    useEffect(() => {
+        if (!chat_name) {
+            getChatRoomName(chat_id)
+                .then(name => navigation.setOptions({ title: name }))
+                .catch(() => navigation.setOptions({ title: "Chat" })); //Default name
+        }
+    }, [])
 
 
     return <ChatPresentation

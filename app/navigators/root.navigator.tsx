@@ -70,7 +70,7 @@ export const RootNavigator = () => {
                     path: "app",
                     initialRouteName: "AppDrawer",
                     screens: {
-                        Chat: "chat/:chat_id/:chat_name"
+                        Chat: "chat/:chat_id/:chat_name?"
                     }
                 },
                 Auth: {

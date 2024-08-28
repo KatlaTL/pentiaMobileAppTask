@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 export const roomStyle = StyleSheet.create({
     roomList: {
@@ -24,19 +24,20 @@ export const roomStyle = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        fontWeight: "700",
+        fontWeight: Platform.OS === "ios" ? "600" : "700",
         color: "black"
     },
     description: {
         fontSize: 16,
-        fontWeight: "500",
+        fontWeight: Platform.OS === "ios" ? "300" : "500",
+        opacity: Platform.OS === "ios" ? .8 : 1,
     },
     floatRightWrapper: {
         alignSelf: "flex-end",
         flexDirection: "row"
     },
     commentWrapper: {
-        width: 40,
+        width: 50,
         marginTop: 10,
         justifyContent: "space-evenly"
     },
@@ -113,22 +114,27 @@ export const roomStyle = StyleSheet.create({
     },
     chatUser: {
         fontSize: 12,
-        marginLeft: "5%"
+        marginLeft: "5%",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatUserSelf: {
         fontSize: 12,
         marginRight: "5%",
-        alignSelf: "flex-end"
+        alignSelf: "flex-end",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatMessageDate: {
         fontSize: 12,
         marginLeft: "5%",
-        alignSelf: "center"
+        alignSelf: "center",
+        opacity: Platform.OS === "ios" ? .5 : 1,
     },
     chatMessageSelfDate: {
         fontSize: 12,
         marginRight: "5%",
-        alignSelf: "center"
+        alignSelf: "center",
+        opacity: Platform.OS === "ios" ? .5 : 1,
+
     },
     chatInputWrapper: {
         flexDirection: "row",
