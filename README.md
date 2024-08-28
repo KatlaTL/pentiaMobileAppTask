@@ -101,7 +101,7 @@ Before running the app make sure you have following setup and installed:
         ```
         * Yarn
         ```
-        yarn start
+        yarn run start
         ````
     - Run the app on Android
         * NPM
@@ -110,7 +110,7 @@ Before running the app make sure you have following setup and installed:
         ```
         * Yarn
         ```
-        yarn android
+        yarn run android
         ````
     - Run the app on IOS
         * NPM
@@ -119,7 +119,7 @@ Before running the app make sure you have following setup and installed:
         ```
         * Yarn
         ```
-        yarn ios
+        yarn run ios
         ````
 
 <p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
