@@ -29,6 +29,8 @@ Pentia mobile app case - [Link to case description](app/assets/development_task_
 
 
 ## About the case
+The app has been tested on both an Android Emulator and an IOS Simulator, but no real devices.
+
 All of the tasks in the [case](app/assets/development_task_2024.1.pdf) has been completed, except for:
 
 Task 5. **Push functionality** 
