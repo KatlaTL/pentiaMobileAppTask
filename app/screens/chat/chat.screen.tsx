@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Keyboard } from "react-native";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useSelector } from 'react-redux';
@@ -139,16 +139,16 @@ const ChatScreen = ({ route, navigation }: ChatNavigationProps): React.JSX.Eleme
     }, [chat_id]);
 
     /**
-     * Get the chat room name if chat_name param is undefined
+     * Get the chat room name before the screen renders if chat_name param is undefined
      */
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!chat_name) {
             getChatRoomName(chat_id)
                 .then(name => navigation.setOptions({ title: name }))
                 .catch(() => navigation.setOptions({ title: "Chat" })); //Default name
         }
     }, [])
-
+    
 
     return <ChatPresentation
         fetchMoreMessages={debounceFetchMoreMessages}
