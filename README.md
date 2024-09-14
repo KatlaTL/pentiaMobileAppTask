@@ -37,7 +37,7 @@ Task 5. **Push functionality**
 - Acceptance test 2. \
     "Every time someone writes a message in the room, a push message is sent to me". 
 
-Support for sending FCM with the previous REST api has been deprecated and removed as of June 2024. The new FCM HTTP v1 REST api has a new form for authorization. It requires an access token to be sent with header of the request. However this access token is, for security reasons, only accessible through a backend server. I have therefore skipped that particular step as it seems to be out of scope of the case to develop my own backend just for the sake of generating an access token.
+Support for sending FCM with the previous REST api has been deprecated and removed as of June 2024. The new FCM HTTP v1 REST api has a new form for authorization. It requires an access token to be sent with the header of the request. However this access token is, for security reasons, only accessible through a backend server. I have therefore skipped that particular step as it seems to be out of scope of the case to develop my own backend just for the sake of generating an access token.
 
 Links to the Firebase documentation about the new API:
 - https://firebase.google.com/docs/cloud-messaging/send-message
