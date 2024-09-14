@@ -184,34 +184,25 @@ app
 
 1. **`App.tsx` File**
     This is the root file of the app
-2. **`assets` Directory**
-    Directory for all assets and styles
+2. **`assets` Directory** for all assets and styles
     - **`img`** Contains images and icons
     - **`styles`** Contains global and screen specific styles
-2. **`constants` Directory**
-    Directory for constant files suchs error messages
-3. **`contexts` Directory**
-    Directory for contexts files
-4. **`hooks` Directory**
-    Directory for custom hooks
-5. **`navigators` Directory**
-    Directory for the apps navigators: Root navigator, App navigator and Auth navigator
-6. **`redux` Directory**
-    Directory for all Redux Store related files
+2. **`constants` Directory** for constant files suchs error messages
+3. **`contexts` Directory** for contexts files
+4. **`hooks` Directory** for custom hooks
+5. **`navigators` Directory** for the apps navigators: Root navigator, App navigator and Auth navigator
+6. **`redux` Directory** for all Redux Store related files
     - **`reducers`** The Redux Stores reducers
     - **`store`** The Redux Store
-7. **`screens` Directory**
-    Directory for the different screens used across the app
+7. **`screens` Directory** for the different screens used across the app
     - **`chat`** Chat screen
-        - **`_components_`** Components used in the chat screen
+        - **`_components`** Components used in the chat screen
     - **`chat-rooms`** Chat room screen
-        - **`_components_`** Components used in the chat rooms screen
+        - **`_components`** Components used in the chat rooms screen
     - **`signin`** Sign in screen
-        - **`_components_`** Components used in the sign in screen
+        - **`_components`** Components used in the sign in screen
     - **`splash`** Splash screen
-8. **`services`Directory**
-    Directory for all services files, primarily used to talk with the Firebase backend
-9. **`utils` Directory**
-    Directory for all files containing utility functions
+8. **`services`Directory** for all services files, primarily used to talk with the Firebase backend
+9. **`utils` Directory** for all files containing utility functions
 
 <p align="right">(<a href="#pentia-mobile-chat-app">back to top</a>)</p>
